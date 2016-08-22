@@ -131,9 +131,9 @@ namespace Markaos\BakAPI {
       if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
         return false;
       }
-      // var_dump($xml);
+
       $arr = [];
-      foreach ($xml->predmety->children() as $key => $subject) {
+      foreach ($xml->predmety->children() as $subject) {
         $arr[] = [
           "name" => (string) $subject->nazev,
           "teacher" => (string) $subject->ucitel,
@@ -148,7 +148,26 @@ namespace Markaos\BakAPI {
     }
 
     private function loadEvents() {
-      return false;
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=akce");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      $arr = [];
+      foreach ($xml->akceall->children() as $event) {
+        $arr[] = [
+          "name" => (string) $event->nazev,
+          "date" => (string) $event->datum,
+          "time" => (string) $event->cas,
+          "desc" => (string) $event->popis,
+          "show" => (string) $event->zobrazit
+        ];
+      }
+      return $arr;
     }
   }
 }
