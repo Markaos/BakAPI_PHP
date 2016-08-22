@@ -16,6 +16,10 @@ namespace Markaos\BakAPI {
     public function reconstruct($data, $verify = false) {
       return false;
     }
+
+    public function load($sections) {
+      return false;
+    }
   }
 }
 ?>

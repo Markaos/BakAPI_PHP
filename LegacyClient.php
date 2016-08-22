@@ -89,39 +89,66 @@ namespace Markaos\BakAPI {
 
     public function load($sections) {
       $sections = explode(',', $sections);
-      $rArr = new Array();
+      $rArr = [];
       foreach($sections as $section) {
         switch($section) {
           case BAKAPI_SECTION_GRADES:
-            rArr[BAKAPI_SECTION_GRADES] = $this->loadGrades();
+            $rArr[BAKAPI_SECTION_GRADES] = $this->loadGrades();
             break;
           case BAKAPI_SECTION_SUBJECTS:
-            rArr[BAKAPI_SECTION_SUBJECTS] = $this->loadSubjects();
+            $rArr[BAKAPI_SECTION_SUBJECTS] = $this->loadSubjects();
             break;
           case BAKAPI_SECTION_MESSAGES:
-            rArr[BAKAPI_SECTION_MESSAGES] = $this->loadMessages();
+            $rArr[BAKAPI_SECTION_MESSAGES] = $this->loadMessages();
             break;
           case BAKAPI_SECTION_EVENTS:
-            rArr[BAKAPI_SECTION_EVENTS] = $this->loadEvents();
+            $rArr[BAKAPI_SECTION_EVENTS] = $this->loadEvents();
             break;
         }
       }
+      return $rArr;
     }
 
     private function loadGrades() {
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=znamky");
 
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      return [];
     }
 
     private function loadSubjects() {
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=predmety");
 
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+      // var_dump($xml);
+      $arr = [];
+      foreach ($xml->predmety->children() as $key => $subject) {
+        $arr[] = [
+          "name" => (string) $subject->nazev,
+          "teacher" => (string) $subject->ucitel,
+          "teacherEmail" => (string) $subject->mailuc
+        ];
+      }
+      return $arr;
     }
 
     private function loadMessages() {
-
+      return false;
     }
 
     private function loadEvents() {
-      
+      return false;
     }
   }
 }
