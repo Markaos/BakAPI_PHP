@@ -144,7 +144,7 @@ namespace Markaos\BakAPI {
     }
 
     private function loadMessages() {
-      return false;
+      return [];
     }
 
     private function loadEvents() {

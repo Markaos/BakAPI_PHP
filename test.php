@@ -110,7 +110,7 @@ if($client != NULL) {
     echo "Fetching messages...\n";
     flush();
     $arr = $client->load(BAKAPI_SECTION_MESSAGES);
-    var_dump($arr[BAKAPI_SECTION_MESSAGES]);
+    echo "  <b>Found " . count($arr[BAKAPI_SECTION_MESSAGES]) . " messages</b>\n";
     flush();
   } else {
     echo "Login failed\n";
