@@ -66,7 +66,7 @@ namespace Markaos\BakAPI {
         "version" => $version,
         "token" => $passHash,
         "server" => $this->server,
-        "uid" => $name . "@" . $server
+        "uid" => $name . "@" . $this->server
       ];
     }
 
