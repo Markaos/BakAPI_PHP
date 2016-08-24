@@ -2,6 +2,7 @@
 namespace Markaos\BakAPI {
   require_once "bakapi.php";
 
+  // This client is used to connect to official ("legacy") servers
   class LegacyClient implements \Markaos\BakAPI\IBakAPIClient {
     private $server = null;
     private $hash = null;
