@@ -107,6 +107,14 @@ namespace Markaos\BakAPI {
       ];
     }
 
+    // Get BakAPIClient associated with this user (ready to read from server)
+    //
+    // @user    UID to look for
+    // @return  BakAPIClient connected to server using user's credentials
+    public static function getClient($user) {
+
+    }
+
     public static function syncData($user) {
 
     }
