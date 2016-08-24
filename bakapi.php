@@ -52,6 +52,51 @@ namespace Markaos\BakAPI {
     public function load($sections);
   }
 
+  // Interface representing a storage (DB, file...)
+  interface IDatabase {
+
+    // Create new table in database
+    //
+    // @tablename   Name of the table to be created
+    // @structure   Associative array describing the table structure  (in form
+    //              "fieldName" => "type"  where  type is either  "string"  or
+    //              "int").  Primary key  has to be created  automatically  as
+    //              column "_ID"
+    public function createTable($tablename, $structure);
+
+    // Get contents of table after filtering out unneeded records
+    //
+    // @table       Table name
+    // @columns     Array of wanted columns' names ("_ID" for primary key)
+    // @conditions  Array of associative arrays of form
+    //              [
+    //                "column"    => "columnName"
+    //                "condition" => "equals|greater|lesser"
+    //                "value"     => "valueToUseAsRightSideOfFormula"
+    //              ]
+    // @orderBy     Array with two strings:  the first is  column name and the
+    //              second is sort order ("ASC" or "DESC")
+    // @return      Array containing query results (["columnName" => "value"])
+    public function query($table, $columns, $conditions, $orderBy);
+
+    // Insert data into database
+    //
+    // @table     Table name
+    // @columns   Columns to insert data to
+    // @values    Values of these columns (array of arrays)
+    // @return    True on success, false otherwise
+    public function insert($table, $columns, $values);
+
+    // Modify data in database
+    //
+    // @table     Table name
+    // @ids       IDs of records to be modified
+    // @columns   Columns to be modified (array)
+    // @values    Values of modified columns (array of arrays)
+    // @return    True on success, false otherwise
+    public function modify($table, $ids, $columns, $values)
+  }
+
   // Primary class of this library, should be the only one used from outside
   class BakAPI {
 
