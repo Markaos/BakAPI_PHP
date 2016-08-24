@@ -115,18 +115,38 @@ namespace Markaos\BakAPI {
 
     }
 
+    // Read new or changed data from server and store them to DB (both as full
+    // DB and as transactions)
+    //
+    // @user    User ID
+    // @return  True if everything went OK, false otherwise
     public static function syncData($user) {
 
     }
 
+    // Get list of changes since last known change
+    //
+    // @user              User ID
+    // @lastKnownChange   ID of the last transaction client knows about
+    // @return            Array with modifications  -  refer to documentation
+    //                    for exact format
     public static function getChanges($user, $lastKnownChange) {
 
     }
 
+    // Get up-to-date database for this user. Called in case the server doesn't
+    // remember the last change known to client
+    //
+    // @user    User ID
+    // @return  Array with full database - more in documentation
     public static function getFullDatabase($user) {
 
     }
 
+    // Get hashsum of the database. Used for veryfying patching process
+    //
+    // @user    User ID
+    // @return  Database hashsum
     public static function getFullDatabaseHash($user) {
 
     }
