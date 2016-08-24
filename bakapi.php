@@ -1,7 +1,7 @@
 <?php
 namespace Markaos\BakAPI {
   require_once "util.php";
-  require_once "BakAPIClient.php";
+  require_once "ProxyClient.php";
   require_once "LegacyClient.php";
 
   define("BAKAPI_STATUS_OK", "01");
@@ -61,7 +61,7 @@ namespace Markaos\BakAPI {
     // @return   BakAPI client able to connect to this server or null
     public static function checkServer($server) {
       $client = NULL;
-      $tmp = new \Markaos\BakAPI\BakAPIClient();
+      $tmp = new \Markaos\BakAPI\ProxyClient();
       if($tmp->checkAndStore($server)) {
         $client = $tmp;
       } else {
