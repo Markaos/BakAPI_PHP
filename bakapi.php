@@ -12,6 +12,9 @@ namespace Markaos\BakAPI {
   define("BAKAPI_SECTION_MESSAGES", "messages");
   define("BAKAPI_SECTION_EVENTS", "events");
 
+  define("BAKAPI_ERROR_SERVER_UNSUPPORTED", "SERVER_UNSUPPORTED");
+  define("BAKAPI_ERROR_LOGIN_FAILED", "LOGIN_FAILED");
+
   // This is the interface used for BakAPI clients (classes which convert data
   // from external sources to format readable by BakAPI server)
   interface IBakAPIClient {
@@ -70,11 +73,38 @@ namespace Markaos\BakAPI {
       return $client;
     }
 
-    public static function login($server, $name, $password) {
+    // Try to register user using given credentials.  The correct  client will
+    // be selected using BakAPI::checkServer().
+    //
+    // @server    Server URL
+    // @name      Username for remote server
+    // @password  Password for remote server
+    // @return    Array containing fields  "status"  (true if registration was
+    //            successful, false otherwise) and "result" (string containing
+    //            UID or error message)
+    public static function register($server, $name, $password) {
       $client = BakAPI::checkServer($server);
-      if($client == NULL || !$client->connect($name, $password)) {
-        return false;
+      if($client == NULL) {
+        return [
+          "status" => false,
+          "result" => BAKAPI_ERROR_SERVER_UNSUPPORTED
+        ];
       }
+
+      $data = $client->connect($name, $password);
+      if($data === false) {
+        return [
+          "status" => false,
+          "result" => BAKAPI_ERROR_LOGIN_FAILED
+        ];
+      }
+
+      // TODO: store data to database
+
+      return [
+        "status" => true,
+        "result" => $data["uid"]
+      ];
     }
 
     public static function syncData($user) {
