@@ -2,7 +2,7 @@
 namespace Markaos\BakAPI {
   require_once "bakapi.php";
 
-  class ProxyClient implements \Markaos\BakAPI\IBakAPIClient {
+  class ProxyClient implements \Markaos\BakAPI\IClient {
     private $server = null;
 
     public function checkAndStore($server) {

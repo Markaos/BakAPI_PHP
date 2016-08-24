@@ -17,7 +17,7 @@ namespace Markaos\BakAPI {
 
   // This is the interface used for BakAPI clients (classes which convert data
   // from external sources to format readable by BakAPI server)
-  interface IBakAPIClient {
+  interface IClient {
 
     // Check if this client is able to connect to server $server. If yes, store
     // server name internally
