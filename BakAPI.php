@@ -146,11 +146,45 @@ namespace Markaos\BakAPI {
         ];
       }
 
-      // TODO: store data to database
+      // Make sure the UID is unique
+      $data["uid"] =
+        str_replace('\\', '_', get_class($client)) . "-" . $data["uid"];
+
+      $uid = $data["uid"];
+      $data = serialize($data);
+      $lastCheck = time();
+
+      $db = \Markaos\BakAPI\Util::getDatabase();
+
+      // Check if this user already exists
+      $res = $db->query("users", ["_ID"],
+        [["column" => "UID", "condition" => "equals", "value" => $uid]], false);
+      if($res === false || count($res) == 0) {
+        // And create a new record if the user doesn't exist
+        $columns = [
+          "UID",
+          "client",
+          "data",
+          "lastUpdateFast",
+          "lastUpdateSlow"
+        ];
+
+        $values = [
+          [
+            $uid,
+            get_class($client),
+            $data,
+            $lastCheck,
+            $lastCheck
+          ]
+        ];
+
+        $db->insert("users", $columns, $values);
+      }
 
       return [
         "status" => true,
-        "result" => $data["uid"]
+        "result" => $uid
       ];
     }
 
