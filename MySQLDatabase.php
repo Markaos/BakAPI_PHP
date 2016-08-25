@@ -17,14 +17,18 @@ namespace Markaos\BakAPI {
       $sql = "CREATE TABLE IF NOT EXISTS $tablename (
         _ID INT (11) AUTO_INCREMENT PRIMARY KEY, ";
 
+      $tmp = true;
       foreach($structure as $key => $type) {
+        if(!$tmp) $sql .= ", ";
+        $tmp = false;
         $type = explode(':', $type . ":x");
-        $sql .= $key . " " . $type[0] == "int" ? "INT (11)" :
-          "TEXT (" . $type[1] . ")" . ", ";
+        $sql .= $key . " " . ($type[0] == "int" ? "INT (11)" :
+          "TEXT (" . $type[1] . ")");
       }
       $sql .= ");";
 
-      return $db->exec($sql) !== false;
+      $res = $this->db->exec($sql);
+      return $res !== false;
     }
 
     public function query($table, $columns, $conditions, $orderBy) {
@@ -37,7 +41,7 @@ namespace Markaos\BakAPI {
         $sql .= $col;
       }
 
-      $sql .= " WHERE ";
+      $sql .= " FROM $table WHERE ";
 
       $values = array();
       $tmp = true;
@@ -47,7 +51,7 @@ namespace Markaos\BakAPI {
         $sql .= $cond["column"] . " ";
         switch($cond["condition"]) {
           case "equals":
-            $sql .= "LIKE";
+            $sql .= "=";
             break;
           case "lesser":
             $sql .= "<";
@@ -68,7 +72,8 @@ namespace Markaos\BakAPI {
       }
 
       $query = $this->db->prepare($sql);
-      $result = $query->execute($values);
+      $query->execute($values);
+      $result = $query->fetchAll();
 
       $r = array();
       foreach ($result as $row) {
@@ -105,6 +110,7 @@ namespace Markaos\BakAPI {
         $sql .= ")";
       }
 
+      $this->db->beginTransaction();
       $query = $this->db->prepare($sql);
       $res = $query->execute($vals);
       $this->db->commit();
