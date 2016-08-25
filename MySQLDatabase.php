@@ -28,7 +28,54 @@ namespace Markaos\BakAPI {
     }
 
     public function query($table, $columns, $conditions, $orderBy) {
-      // TODO: stub
+      $sql = "SELECT ";
+      $tmp = true;
+
+      foreach ($columns as $col) {
+        if(!$tmp) $sql .= ", ";
+        $tmp = false;
+        $sql .= $col;
+      }
+
+      $sql .= " WHERE ";
+
+      $values = array();
+      $tmp = true;
+      foreach ($conditions as $cond) {
+        if(!$tmp) $sql .= " AND ";
+        $tmp = false;
+        $sql .= $cond["column"] . " ";
+        switch($cond["condition"]) {
+          case "equals":
+            $sql .= "LIKE";
+            break;
+          case "lesser":
+            $sql .= "<";
+            break;
+          case "greater":
+            $sql .= ">";
+            break;
+          default:
+            throw new Exception("Unknown operator");
+            break;
+        }
+        $sql .= " ?";
+        $values[] = $cond["value"];
+      }
+
+      if($orderBy !== false) {
+        $sql .= " $orderBy";
+      }
+
+      $query = $this->db->prepare($sql);
+      $result = $query->execute($values);
+
+      $r = array();
+      foreach ($result as $row) {
+        $r[] = $row;
+      }
+
+      return $r;
     }
 
     public function insert($table, $columns, $values) {
