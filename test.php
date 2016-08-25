@@ -47,6 +47,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 echo "<pre>";
+echo "Checking settings...\n";
+$settings = \Markaos\BakAPI\Util::getSettings();
+echo $settings["test"] . "\n";
 echo "Checking server...\n";
 flush();
 $client = \Markaos\BakAPI\BakAPI::checkServer($_GET["server"]);

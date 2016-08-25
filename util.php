@@ -13,6 +13,17 @@ namespace Markaos\BakAPI {
       \curl_close($ch);
       return $store;
     }
+
+    public static function getSettings() {
+      if(!\file_exists("config.ini")) {
+        \file_put_contents("config.ini", "; Put your settings here");
+      }
+
+      $settings = \parse_ini_file("defaults.ini");
+      $custom = \parse_ini_file("config.ini");
+
+      return \array_merge($settings, $custom);
+    }
   }
 }
 ?>
