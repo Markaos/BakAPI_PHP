@@ -17,6 +17,10 @@ namespace Markaos\BakAPI {
       return false;
     }
 
+    public function getData() {
+      return false;
+    }
+
     public function load($sections) {
       return false;
     }

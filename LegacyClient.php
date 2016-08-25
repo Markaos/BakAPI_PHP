@@ -6,6 +6,7 @@ namespace Markaos\BakAPI {
   class LegacyClient implements \Markaos\BakAPI\IClient {
     private $server = null;
     private $hash = null;
+    private $data = null;
 
     public function checkAndStore($server) {
       $store = \Markaos\BakAPI\Util::loadPage($server . "/login.aspx?gethx=null");
@@ -61,7 +62,7 @@ namespace Markaos\BakAPI {
 
       $version = (string) $xml->verze;
 
-      return [
+      $this->data = [
         "name"    => $name,
         "class"   => $cls,
         "version" => $version,
@@ -70,6 +71,8 @@ namespace Markaos\BakAPI {
         "uid"     => str_replace(['/', '\\', ':'], ['_', '_', '_'],
                        $uname . "@" . $this->server)
       ];
+
+      return $this->getData();
     }
 
     public function reconstruct($data, $verify = false) {
@@ -78,6 +81,7 @@ namespace Markaos\BakAPI {
 
       $this->server = $data["server"];
       $this->hash = $loginHash;
+      $this->data = $data;
 
       if($verify) {
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -89,6 +93,10 @@ namespace Markaos\BakAPI {
           return false;
         }
       }
+    }
+
+    public function getData() {
+      return $this->data;
     }
 
     public function load($sections) {

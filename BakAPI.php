@@ -44,6 +44,11 @@ namespace Markaos\BakAPI {
     // @return  True if everything went good, false otherwise
     public function reconstruct($data, $verify = false);
 
+    // Get data (same as connect)
+    //
+    // @return    Array with data from connect()
+    public function getData();
+
     // Load specified sections
     //
     // @sections  Coma separated list of sections (string)
