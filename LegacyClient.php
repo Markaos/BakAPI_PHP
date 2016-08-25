@@ -52,6 +52,7 @@ namespace Markaos\BakAPI {
         return false;
       }
 
+      $uname = $name;
       $name = (string) $xml->jmeno;
       $cls = substr($name, strpos($name, ',') + 2);
       $name = substr($name, 0, strpos($name, ','));
@@ -61,12 +62,13 @@ namespace Markaos\BakAPI {
       $version = (string) $xml->verze;
 
       return [
-        "name" => $name,
-        "class" => $cls,
+        "name"    => $name,
+        "class"   => $cls,
         "version" => $version,
-        "token" => $passHash,
-        "server" => $this->server,
-        "uid" => $name . "@" . $this->server
+        "token"   => $passHash,
+        "server"  => $this->server,
+        "uid"     => str_replace(['/', '\\', ':'], ['_', '_', '_'],
+                       $uname . "@" . $this->server)
       ];
     }
 
