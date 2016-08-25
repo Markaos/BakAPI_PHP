@@ -106,17 +106,15 @@ namespace Markaos\BakAPI {
     // @server   String containing server URL
     // @return   BakAPI client able to connect to this server or null
     public static function checkServer($server) {
-      $client = NULL;
-      $tmp = new \Markaos\BakAPI\ProxyClient();
-      if($tmp->checkAndStore($server)) {
-        $client = $tmp;
-      } else {
-        $tmp = new \Markaos\BakAPI\LegacyClient();
-        if($tmp->checkAndStore($server)) {
-          $client = $tmp;
+      $settings = \Markaos\BakAPI\Util::getSettings();
+      foreach ($settings["clients"] as $client) {
+        if(!class_exists($client)) continue;
+        $client = new $client();
+        if($client->checkAndStore($server)) {
+          return $client;
         }
       }
-      return $client;
+      return NULL;
     }
 
     // Try to register user using given credentials.  The correct  client will
