@@ -24,6 +24,11 @@ namespace Markaos\BakAPI {
 
       return \array_merge($settings, $custom);
     }
+
+    public static function getDatabase() {
+      $settings = \Markaos\BakAPI\Util::getSettings();
+      return new $settings["database"]();
+    }
   }
 }
 ?>

@@ -3,6 +3,7 @@ namespace Markaos\BakAPI {
   require_once "util.php";
   require_once "ProxyClient.php";
   require_once "LegacyClient.php";
+  require_once "MySQLDatabase.php";
 
   define("BAKAPI_STATUS_OK", "01");
   define("BAKAPI_STATUS_ERROR", "02");
@@ -155,9 +156,27 @@ namespace Markaos\BakAPI {
     // Get BakAPIClient associated with this user (ready to read from server)
     //
     // @user    UID to look for
-    // @return  BakAPIClient connected to server using user's credentials
+    // @return  BakAPIClient connected to server using  user's  credentials or
+    //          false on failure
     public static function getClient($user) {
-
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $columns = ["client", "data"];
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+      $result = $db->query("users", $columns, $conditions, false);
+      if(count($result) > 1) {
+        // TODO: report database corruption here
+      } else if (count($result) < 1) {
+        return false;
+      }
+      $client = new $result[0]["client"]();
+      $client->reconstruct(unserialize($result[0]["data"]));
+      return $client;
     }
 
     // Read new or changed data from server and store them to DB (both as full
