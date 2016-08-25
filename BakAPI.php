@@ -64,6 +64,7 @@ namespace Markaos\BakAPI {
     //              or "int", size is how many characters can be stored  here;
     //              size parameter is required only for string, int size is 11).
     //              Primary key has to be created automatically as column "_ID"
+    // @return      True on success, false on failure
     public function createTable($tablename, $structure);
 
     // Get contents of table after filtering out unneeded records

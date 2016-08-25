@@ -20,7 +20,7 @@ namespace Markaos\BakAPI {
       }
       $sql .= ");";
 
-      $connection->exec($sql);
+      return $connection->exec($sql) !== false;
     }
 
     public function query($table, $columns, $conditions, $orderBy) {
