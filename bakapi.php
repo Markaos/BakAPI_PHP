@@ -59,9 +59,10 @@ namespace Markaos\BakAPI {
     //
     // @tablename   Name of the table to be created
     // @structure   Associative array describing the table structure  (in form
-    //              "fieldName" => "type"  where  type is either  "string"  or
-    //              "int").  Primary key  has to be created  automatically  as
-    //              column "_ID"
+    //              "fieldName" => "type:size"  where  type is either  "string"
+    //              or "int", size is how many characters can be stored  here;
+    //              size parameter is required only for string, int size is 11).
+    //              Primary key has to be created automatically as column "_ID"
     public function createTable($tablename, $structure);
 
     // Get contents of table after filtering out unneeded records
