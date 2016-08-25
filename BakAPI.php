@@ -12,6 +12,11 @@ namespace Markaos\BakAPI {
   define("BAKAPI_SECTION_SUBJECTS", "subjects");
   define("BAKAPI_SECTION_MESSAGES", "messages");
   define("BAKAPI_SECTION_EVENTS", "events");
+  define("BAKAPI_SECTION_HOMEWORK", "homework");
+  define("BAKAPI_SECTION_TIMETABLE_STABLE", "timetable_stable");
+  define("BAKAPI_SECTION_TIMETABLE_OVERLAY", "timetable_overlay");
+  define("BAKAPI_SECTION_TIMETABLE_CYCLES", "timetable_cycles");
+  define("BAKAPI_SECTION_TIMETABLE_CAPTIONS", "timetable_captions");
 
   define("BAKAPI_ERROR_SERVER_UNSUPPORTED", "SERVER_UNSUPPORTED");
   define("BAKAPI_ERROR_LOGIN_FAILED", "LOGIN_FAILED");
