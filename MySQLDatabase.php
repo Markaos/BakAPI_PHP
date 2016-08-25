@@ -79,7 +79,37 @@ namespace Markaos\BakAPI {
     }
 
     public function insert($table, $columns, $values) {
-      // TODO: stub
+      $rowsCount = count($values);
+      $colsCount = count($columns);
+
+      $sql = "INSERT INTO $table (";
+      $tmp = true;
+      foreach($columns as $col) {
+        if(!$tmp) $sql .= ", ";
+        $tmp = false;
+        $sql .= $col;
+      }
+      $sql .= ") VALUES ";
+
+      $vals = array();
+
+      for($i = 0; $i < $rowsCount; $i++) {
+        $sql .= "(";
+        $tmp = true;
+        for($j = 0; $j < $colsCount; $j++) {
+          if(!$tmp) $sql .= ", ";
+          $tmp = false;
+          $sql .= "?";
+          $vals[] = $values[$i][$j];
+        }
+        $sql .= ")";
+      }
+
+      $query = $this->db->prepare($sql);
+      $res = $query->execute($vals);
+      $this->db->commit();
+
+      return $res !== false;
     }
 
     public function modify($table, $ids, $columns, $values) {
