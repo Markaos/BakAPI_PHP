@@ -8,6 +8,17 @@ namespace Markaos\BakAPI {
     private $hash = null;
     private $data = null;
 
+    public function debug($action) {
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=$action");
+
+      $dom = new \DOMDocument();
+      $dom->preserveWhiteSpace = false;
+      $dom->loadXML($store);
+      $dom->formatOutput = true;
+      return \htmlspecialchars($dom->saveXml());
+    }
+
     public function checkAndStore($server) {
       $store = \Markaos\BakAPI\Util::loadPage($server . "/login.aspx?gethx=null");
 
