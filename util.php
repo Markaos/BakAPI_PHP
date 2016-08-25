@@ -7,8 +7,8 @@ namespace Markaos\BakAPI {
       \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
       \curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
       \curl_setopt ($ch, CURLOPT_USERAGENT, "");
-      \curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-      \curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      \curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+      \curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
       $store = \curl_exec ($ch);
       \curl_close($ch);
       return $store;
