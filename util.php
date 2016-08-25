@@ -1,7 +1,8 @@
 <?php
 namespace Markaos\BakAPI {
+  define("BAKAPI_DB_VERSION", 1);
+
   class Util {
-    define("BAKAPI_DB_VERSION", 1);
 
     public static function loadPage($url) {
       $ch = \curl_init();

@@ -225,7 +225,31 @@ namespace Markaos\BakAPI {
     // @user    User ID
     // @return  True if everything went OK, false otherwise
     public static function syncData($user) {
+      // How will  we do that?  It's simple,  we'll  just  load  client (using
+      // getClient()),  make array  from database and  do some magic  to merge
+      // these two while saving all changes  we made to allow users to  simply
+      // patch their local database. Good luck
 
+      // Enough talking, let's make some code
+      $client = BakAPI::getClient($user);
+      // Good beginning
+      if($client === false) {
+        // This user isn't registered yet
+        return false;
+      }
+
+      $newData = $client->load(implode(',', [
+          BAKAPI_SECTION_GRADES,
+          BAKAPI_SECTION_SUBJECTS,
+          BAKAPI_SECTION_MESSAGES,
+          BAKAPI_SECTION_EVENTS
+        ])
+      );
+      // New data ready - this didn't even hurt
+      // Old data loading is even simpler:
+      $oldData = BakAPI::getFullDatabase($user);
+
+      // TODO: merge them
     }
 
     // Get list of changes since last known change
@@ -239,12 +263,106 @@ namespace Markaos\BakAPI {
     }
 
     // Get up-to-date database for this user. Called in case the server doesn't
-    // remember the last change known to client
+    // remember the last change known to client or when synchronizing data with
+    // remote
     //
     // @user    User ID
     // @return  Array with full database - more in documentation
     public static function getFullDatabase($user) {
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $data = array();
 
+      // Let's start with grades
+      $columns = [
+        "subject",
+        "title",
+        "description",
+        "grade",
+        "weight",
+        "date"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
+      foreach($tmp as $grade) {
+        $data[BAKAPI_SECTION_GRADES][] = $grade;
+      }
+
+      // Now subjects
+      $columns = [
+        "name",
+        "teachers",
+        "emails",
+        "short"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query("subjects", $columns, $conditions, "_ID ASC");
+      foreach($tmp as $subject) {
+        $data[BAKAPI_SECTION_SUBJECTS][] = $subject;
+      }
+
+      // Messages...
+      $columns = [
+        "from",
+        "contents",
+        "sysid",
+        "date"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query("messages", $columns, $conditions, "_ID ASC");
+      foreach($tmp as $message) {
+        $data[BAKAPI_SECTION_MESSAGES][] = $message;
+      }
+
+      // And events
+      $columns = [
+        "name",
+        "description",
+        "timerange",
+        "rooms",
+        "teachers",
+        "classes",
+        "show",
+        "date"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
+      foreach($tmp as $event) {
+        $data[BAKAPI_SECTION_EVENTS][] = $event;
+      }
+
+      return $data;
     }
 
     // Get hashsum of the database. Used for veryfying patching process
