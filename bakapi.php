@@ -76,7 +76,8 @@ namespace Markaos\BakAPI {
     //                "value"     => "valueToUseAsRightSideOfFormula"
     //              ]
     // @orderBy     Array with two strings:  the first is  column name and the
-    //              second is sort order ("ASC" or "DESC")
+    //              second is  sort order  ("ASC"  or  "DESC").  Pass false to
+    //              use default sorting
     // @return      Array containing query results (["columnName" => "value"])
     public function query($table, $columns, $conditions, $orderBy);
 
