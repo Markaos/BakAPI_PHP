@@ -29,6 +29,20 @@ namespace Markaos\BakAPI {
       $settings = \Markaos\BakAPI\Util::getSettings();
       return new $settings["database"]();
     }
+
+    public static function initBakAPI() {
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $table = "users";
+      $structure = [
+        "UID" => "string:255",
+        "client" => "string:127",
+        "data" => "string:511",
+        "lastUpdateFast" => "int",
+        "lastUpdateSlow" => "int"
+      ];
+
+      $db->createTable($table, $structure);
+    }
   }
 }
 ?>
