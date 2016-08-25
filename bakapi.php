@@ -95,7 +95,7 @@ namespace Markaos\BakAPI {
     // @columns   Columns to be modified (array)
     // @values    Values of modified columns (array of arrays)
     // @return    True on success, false otherwise
-    public function modify($table, $ids, $columns, $values)
+    public function modify($table, $ids, $columns, $values);
   }
 
   // Primary class of this library, should be the only one used from outside
