@@ -1,6 +1,8 @@
 <?php
 namespace Markaos\BakAPI {
   class Util {
+    define("BAKAPI_DB_VERSION", 1);
+
     public static function loadPage($url) {
       $ch = \curl_init();
       \curl_setopt($ch, CURLOPT_URL, $url);
@@ -32,6 +34,13 @@ namespace Markaos\BakAPI {
 
     public static function initBakAPI() {
       $db = \Markaos\BakAPI\Util::getDatabase();
+
+      $table = "meta";
+      $structure = [
+        "version" => "int"
+      ];
+      $db->createTable($table, $structure);
+
       $table = "users";
       $structure = [
         "UID" => "string:255",
@@ -40,7 +49,52 @@ namespace Markaos\BakAPI {
         "lastUpdateFast" => "int",
         "lastUpdateSlow" => "int"
       ];
+      $db->createTable($table, $structure);
 
+      $table = "grades";
+      $structure = [
+        "UID"         => "string:255",
+        "subject"     => "string:64",
+        "title"       => "string:127",
+        "description" => "string:255",
+        "grade"       => "string:4",
+        "weight"      => "int",
+        "date"        => "int",
+      ];
+      $db->createTable($table, $structure);
+
+      $table = "subjects";
+      $structure = [
+        "UID"         => "string:255",
+        "name"        => "string:64",
+        "teachers"    => "string:255",
+        "emails"      => "string:255",
+        "short"       => "string:8"
+      ];
+      $db->createTable($table, $structure);
+
+      $table = "events";
+      $structure = [
+        "UID"         => "string:255",
+        "name"        => "string:64",
+        "description" => "string:512",
+        "timerange"   => "string:16",
+        "rooms"       => "string:128",
+        "teachers"    => "string:128",
+        "classes"     => "string:128",
+        "show"        => "int",
+        "date"        => "int"
+      ];
+      $db->createTable($table, $structure);
+
+      $table = "messages";
+      $structure = [
+        "UID"         => "string:255",
+        "from"        => "string:64",
+        "contents"    => "string:2048",
+        "sysid"       => "string:128",
+        "date"        => "int"
+      ];
       $db->createTable($table, $structure);
     }
   }
