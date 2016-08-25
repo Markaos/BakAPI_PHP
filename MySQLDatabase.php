@@ -14,12 +14,11 @@ namespace Markaos\BakAPI {
         _ID INT (11) AUTO_INCREMENT PRIMARY KEY, ";
 
       foreach($structure as $key => $type) {
-        // 2kB
         $type = explode(':', $type . ":x");
         $sql .= $key . " " . $type[0] == "int" ? "INT (11)" :
           "TEXT (" . $type[1] . ")" . ", ";
       }
-      $sql .= ")";
+      $sql .= ");";
 
       $connection->exec($sql);
     }
