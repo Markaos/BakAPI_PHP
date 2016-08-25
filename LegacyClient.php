@@ -127,6 +127,9 @@ namespace Markaos\BakAPI {
           case BAKAPI_SECTION_EVENTS:
             $rArr[BAKAPI_SECTION_EVENTS] = $this->loadEvents();
             break;
+          case BAKAPI_SECTION_HOMEWORK:
+            $rArr[BAKAPI_SECTION_HOMEWORK] = $this->loadHomework();
+            break;
         }
       }
       return $rArr;
@@ -190,6 +193,30 @@ namespace Markaos\BakAPI {
           "show" => (string) $event->zobrazit
         ];
       }
+      return $arr;
+    }
+
+    private function loadHomework() {
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=ukoly");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      $arr = array();
+      foreach ($xml->ukoly->children() as $homework) {
+        $arr[] = [
+          "subject"     => (string) $homework->predmet,
+          "issued"      => (string) $homework->zadano,
+          "deadline"    => (string) $homework->nakdy,
+          "state"       => (string) $homework->status,
+          "description" => (string) $homework->popis
+        ];
+      }
+
       return $arr;
     }
   }
