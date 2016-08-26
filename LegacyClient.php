@@ -217,7 +217,26 @@ namespace Markaos\BakAPI {
     }
 
     private function loadMessages() {
-      return [];
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=znamky");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      $arr = array();
+      foreach($xml->zpravy->children() as $message) {
+        $arr[] = [
+          "from"      => (string) $message->od,
+          "contents"  => (string) $message->text,
+          "sysid"     => (string) $message->id,
+          "date"      => (int)    \strtotime((string) $message->cas)
+        ];
+      }
+
+      return $arr;
     }
 
     private function loadEvents() {
