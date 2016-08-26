@@ -95,14 +95,12 @@ if($client != NULL) {
       if($tmp[2] >= 10) break;
       if($tmp[1] > 0) {
         if($event["show"] == 1) {
-          $date = date_create_from_format("Ymd", $event["date"]);
-          echo "  <b><i>" . date_format($date, "d.m.Y") . "</i>  " .
+          echo "  <b><i>" . date("d.m.Y", $event["date"]) . "</i>  " .
             $event["name"] . "</b>: " . $event["desc"] . "\n";
           $tmp[2]++;
         }
       } else {
-        $date = date_create_from_format("Ymd", $event["date"]);
-        echo "  <b><i>" . date_format($date, "d.m.Y") . "</i>  " .
+        echo "  <b><i>" . date("d.m.Y", $event["date"]) . "</i>  " .
           $event["name"] . "</b>: " . $event["desc"] . "\n";
         $tmp[2]++;
       }
