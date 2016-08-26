@@ -297,16 +297,16 @@ namespace Markaos\BakAPI {
             $short = (string) $lesson->zkrpr;
           }
           $arr[] = [
-            "caption"     => (string) $lesson->caption;
-            "day"         => (string) $dayShort;
-            "type"        => (string) $lesson->typ;
-            "short"       => (string) $short;
-            "steacher"    => (string) $lesson->zkruc;
-            "teacher"     => (string) $lesson->uc;
-            "shortRoom"   => (string) $lesson->zkrmist;
-            "shortGroup"  => (string) $lesson->zkrskup;
-            "group"       => (string) $lesson->skup;
-            "cycle"       => (string) $lesson->cycle;
+            "caption"     => (string) $lesson->caption,
+            "day"         => (string) $dayShort,
+            "type"        => (string) $lesson->typ,
+            "short"       => (string) $short,
+            "steacher"    => (string) $lesson->zkruc,
+            "teacher"     => (string) $lesson->uc,
+            "shortRoom"   => (string) $lesson->zkrmist,
+            "shortGroup"  => (string) $lesson->zkrskup,
+            "group"       => (string) $lesson->skup,
+            "cycle"       => (string) $lesson->cycle
           ];
         }
       }
@@ -364,17 +364,17 @@ namespace Markaos\BakAPI {
             $short = (string) $lesson->zkrpr;
           }
           $a = [
-            "caption"     => (string) $lesson->caption;
-            "day"         => (string) $dayShort;
-            "type"        => (string) $lesson->typ;
-            "short"       => (string) $short;
-            "steacher"    => (string) $lesson->zkruc;
-            "teacher"     => (string) $lesson->uc;
-            "shortRoom"   => (string) $lesson->zkrmist;
-            "shortGroup"  => (string) $lesson->zkrskup;
-            "group"       => (string) $lesson->skup;
-            "theme"       => (string) $lesson->tema;
-            "date"        => \strtotime((string) $day->datum);
+            "caption"     => (string) $lesson->caption,
+            "day"         => (string) $dayShort,
+            "type"        => (string) $lesson->typ,
+            "short"       => (string) $short,
+            "steacher"    => (string) $lesson->zkruc,
+            "teacher"     => (string) $lesson->uc,
+            "shortRoom"   => (string) $lesson->zkrmist,
+            "shortGroup"  => (string) $lesson->zkrskup,
+            "group"       => (string) $lesson->skup,
+            "theme"       => (string) $lesson->tema,
+            "date"        => \strtotime((string) $day->datum)
           ];
 
           if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
@@ -406,17 +406,17 @@ namespace Markaos\BakAPI {
             $short = (string) $lesson->zkrpr;
           }
           $a = [
-            "caption"     => (string) $lesson->caption;
-            "day"         => (string) $dayShort;
-            "type"        => (string) $lesson->typ;
-            "short"       => (string) $short;
-            "steacher"    => (string) $lesson->zkruc;
-            "teacher"     => (string) $lesson->uc;
-            "shortRoom"   => (string) $lesson->zkrmist;
-            "shortGroup"  => (string) $lesson->zkrskup;
-            "group"       => (string) $lesson->skup;
-            "theme"       => (string) $lesson->tema;
-            "date"        => \strtotime((string) $day->datum);
+            "caption"     => (string) $lesson->caption,
+            "day"         => (string) $dayShort,
+            "type"        => (string) $lesson->typ,
+            "short"       => (string) $short,
+            "steacher"    => (string) $lesson->zkruc,
+            "teacher"     => (string) $lesson->uc,
+            "shortRoom"   => (string) $lesson->zkrmist,
+            "shortGroup"  => (string) $lesson->zkrskup,
+            "group"       => (string) $lesson->skup,
+            "theme"       => (string) $lesson->tema,
+            "date"        => \strtotime((string) $day->datum)
           ];
 
           if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
@@ -431,7 +431,7 @@ namespace Markaos\BakAPI {
     private function loadTimetableCycles() {
       $correction = 0;
       $arr = array();
-      for($i = 0; i < 4; i++) {
+      for($i = 0; $i < 4; $i++) {
         $dateInt = \strtotime(($i + $correction == 0 ? "-" : "+") .
           \abs($i + $correction - 1) . " week monday");
         $date = \date("Ymd", $dateInt);
@@ -446,7 +446,7 @@ namespace Markaos\BakAPI {
 
         $arr[] = [
           "mondayDate" => $dateInt,
-          "cycle"      => (string) $xml->rozvrh->zkratkacyklu;
+          "cycle"      => (string) $xml->rozvrh->zkratkacyklu
         ];
       }
 
