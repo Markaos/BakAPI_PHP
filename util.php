@@ -43,7 +43,7 @@ namespace Markaos\BakAPI {
       $stableLessons = array();
       $day = $actual["day"];
       $caption = $actual["caption"];
-      
+
       foreach($stableTm as $lesson) {
         if($lesson["day"] == $day && $lesson["caption"] == $caption) {
           // There may be several lessons for one day and caption,  because we
@@ -100,7 +100,7 @@ namespace Markaos\BakAPI {
       $table = BAKAPI_SECTION_GRADES;
       $structure = [
         "UID"         => "string:128",
-        "subject"     => "string:64",
+        "subject"     => "string:8",
         "title"       => "string:128",
         "description" => "string:256",
         "grade"       => "string:4",
