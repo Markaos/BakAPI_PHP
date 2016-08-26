@@ -463,8 +463,15 @@ namespace Markaos\BakAPI {
           return false;
         }
 
+        $dateX = \strtotime((string) $xml->rozvrh->dny->den->datum);
+        $date1 = new \DateTime(\date("Y-m-d", $dateInt));
+        $date2 = new \DateTime(\date("Y-m-d", $dateX));
+
+        $diff = $date2->diff($date1)->format("%a");
+        $correction = abs($diff / 7);
+
         $arr[] = [
-          "mondayDate" => $dateInt,
+          "mondayDate" => $dateX,
           "cycle"      => (string) $xml->rozvrh->zkratkacyklu
         ];
       }
