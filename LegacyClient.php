@@ -218,7 +218,7 @@ namespace Markaos\BakAPI {
 
     private function loadMessages() {
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
-        "/login.aspx?hx=" . $this->hash . "&pm=znamky");
+        "/login.aspx?hx=" . $this->hash . "&pm=prijate");
 
       \libxml_use_internal_errors(true);
       $xml = \simplexml_load_string($store);
