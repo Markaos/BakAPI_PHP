@@ -7,6 +7,7 @@ namespace Markaos\BakAPI {
     private $server = null;
     private $hash = null;
     private $data = null;
+    private $timetableCache = null;
 
     public function debug($action) {
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -130,6 +131,18 @@ namespace Markaos\BakAPI {
           case BAKAPI_SECTION_HOMEWORK:
             $rArr[BAKAPI_SECTION_HOMEWORK] = $this->loadHomework();
             break;
+          case BAKAPI_SECTION_TIMETABLE_STABLE:
+            $rArr[BAKAPI_SECTION_TIMETABLE_STABLE] = $this->loadStableTimetable();
+            break;
+          case BAKAPI_SECTION_TIMETABLE_CAPTIONS:
+            $rArr[BAKAPI_SECTION_TIMETABLE_CAPTIONS] = $this->loadTimetableCaptions();
+            break;
+          case BAKAPI_SECTION_TIMETABLE_OVERLAY:
+            $rArr[BAKAPI_SECTION_TIMETABLE_OVERLAY] = $this->loadTimetableOverlay();
+            break;
+          case BAKAPI_SECTION_TIMETABLE_CYCLES:
+            $rArr[BAKAPI_SECTION_TIMETABLE_CYCLES] = $this->loadTimetableCycles();
+            break;
         }
       }
       return $rArr;
@@ -187,7 +200,7 @@ namespace Markaos\BakAPI {
       foreach ($xml->akceall->children() as $event) {
         $arr[] = [
           "name" => (string) $event->nazev,
-          "date" => (string) $event->datum,
+          "date" => \strtotime((string) $event->datum),
           "time" => (string) $event->cas,
           "desc" => (string) $event->popis,
           "show" => (string) $event->zobrazit
@@ -210,10 +223,196 @@ namespace Markaos\BakAPI {
       foreach ($xml->ukoly->children() as $homework) {
         $arr[] = [
           "subject"     => (string) $homework->predmet,
-          "issued"      => (string) $homework->zadano,
-          "deadline"    => (string) $homework->nakdy,
+          "issued"      => \strtotime((string) $homework->zadano),
+          "deadline"    => \strtotime((string) $homework->nakdy),
           "state"       => (string) $homework->status,
           "description" => (string) $homework->popis
+        ];
+      }
+
+      return $arr;
+    }
+
+    private function loadStableTimetable() {
+      $xml = null;
+      if($this->timetableCache === null) {
+        $store = \Markaos\BakAPI\Util::loadPage($this->server .
+          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=perm");
+
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+        $this->timetableCache = $xml;
+      } else {
+        $xml = $this->timetableCache;
+      }
+
+      $arr = array();
+      foreach($xml->rozvrh->dny->children() as $day) {
+        if(!isset($day->zkratka)) continue;
+        $dayShort = (string) $day->zkratka;
+        foreach ($day->hodiny->children as $lesson) {
+          // Filter out free hours
+          if((string) $lesson->typ == "X") continue;
+          $short = "";
+          if((string) $lesson->typ == "A") {
+            $short = (string) $lesson->zkratka;
+          } else if ((string) $lesson->typ == "H") {
+            $short = (string) $lesson->zkrpr;
+          }
+          $arr[] = [
+            "caption"     => (string) $lesson->caption;
+            "day"         => (string) $dayShort;
+            "type"        => (string) $lesson->typ;
+            "short"       => (string) $short;
+            "steacher"    => (string) $lesson->zkruc;
+            "teacher"     => (string) $lesson->uc;
+            "shortRoom"   => (string) $lesson->zkrmist;
+            "shortGroup"  => (string) $lesson->zkrskup;
+            "group"       => (string) $lesson->skup;
+            "cycle"       => (string) $lesson->cycle;
+          ];
+        }
+      }
+
+      return $arr;
+    }
+
+    private function loadTimetableCaptions() {
+      if($this->timetableCache === null) {
+        $this->loadStableTimetable();
+      }
+
+      $arr = array();
+      foreach($this->timetableCache->rozvrh->hodiny->children() as $caption) {
+        if(!isset($caption->caption)) continue;
+        $arr[] = [
+          "caption" => (string) $caption->caption,
+          "begin"   => (string) $caption->begintime,
+          "end"     => (string) $caption->endtime,
+        ];
+      }
+
+      return $arr;
+    }
+
+    private function loadTimetableOverlay() {
+      $stable = $this->loadStableTimetable();
+
+      // This is really simple in PHP
+      $thisMonday = \date("Ymd", \strtotime("this week monday 00:00:00"));
+
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$thisMonday");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      $arr = array();
+      foreach($xml->rozvrh->dny->children() as $day) {
+        if(!isset($day->zkratka)) continue;
+        $dayShort = (string) $day->zkratka;
+        $nextMonday = \date("Ymd", \strtotime("next week monday 00:00:00",
+          \strtotime((string) $day->datum)));
+        foreach ($day->hodiny->children as $lesson) {
+          // Filter out free hours
+          if((string) $lesson->typ == "X") continue;
+          // TODO: check whether 'A' lessons contain captions
+          $short = "";
+          if((string) $lesson->typ == "A") {
+            $short = (string) $lesson->zkratka;
+          } else if ((string) $lesson->typ == "H") {
+            $short = (string) $lesson->zkrpr;
+          }
+          $a = [
+            "caption"     => (string) $lesson->caption;
+            "day"         => (string) $dayShort;
+            "type"        => (string) $lesson->typ;
+            "short"       => (string) $short;
+            "steacher"    => (string) $lesson->zkruc;
+            "teacher"     => (string) $lesson->uc;
+            "shortRoom"   => (string) $lesson->zkrmist;
+            "shortGroup"  => (string) $lesson->zkrskup;
+            "group"       => (string) $lesson->skup;
+            "theme"       => (string) $lesson->tema;
+            "date"        => \strtotime((string) $day->datum);
+          ];
+
+          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
+            $arr[] = $a;
+          }
+        }
+      }
+
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$nextMonday");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      foreach($xml->rozvrh->dny->children() as $day) {
+        if(!isset($day->zkratka)) continue;
+        $dayShort = (string) $day->zkratka;
+        foreach ($day->hodiny->children as $lesson) {
+          // Filter out free hours
+          if((string) $lesson->typ == "X") continue;
+          // TODO: check whether 'A' lessons contain captions
+          $short = "";
+          if((string) $lesson->typ == "A") {
+            $short = (string) $lesson->zkratka;
+          } else if ((string) $lesson->typ == "H") {
+            $short = (string) $lesson->zkrpr;
+          }
+          $a = [
+            "caption"     => (string) $lesson->caption;
+            "day"         => (string) $dayShort;
+            "type"        => (string) $lesson->typ;
+            "short"       => (string) $short;
+            "steacher"    => (string) $lesson->zkruc;
+            "teacher"     => (string) $lesson->uc;
+            "shortRoom"   => (string) $lesson->zkrmist;
+            "shortGroup"  => (string) $lesson->zkrskup;
+            "group"       => (string) $lesson->skup;
+            "theme"       => (string) $lesson->tema;
+            "date"        => \strtotime((string) $day->datum);
+          ];
+
+          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
+            $arr[] = $a;
+          }
+        }
+      }
+
+      return $arr;
+    }
+
+    private function loadTimetableCycles() {
+      $correction = 0;
+      $arr = array();
+      for($i = 0; i < 4; i++) {
+        $dateInt = \strtotime(($i + $correction == 0 ? "-" : "+") .
+          \abs($i + $correction - 1) . " week monday");
+        $date = \date("Ymd", $dateInt);
+        $store = \Markaos\BakAPI\Util::loadPage($this->server .
+          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$date");
+
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+
+        $arr[] = [
+          "mondayDate" => $dateInt,
+          "cycle"      => (string) $xml->rozvrh->zkratkacyklu;
         ];
       }
 

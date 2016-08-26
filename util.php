@@ -33,6 +33,51 @@ namespace Markaos\BakAPI {
       return new $settings["database"]();
     }
 
+    // Check whether stable timetable contains this lesson
+    //
+    // @stableTm  Stable timetable (whole)
+    // @actual    Lesson to compare
+    // @return    True if actual lesson can be found in the stable timetable,
+    //            false if not
+    public static function compareLessons($stableTm, $actual) {
+      $stableLessons = array();
+      $day = $actual["day"];
+      $caption = $actual["caption"];
+      
+      foreach($stableTm as $lesson) {
+        if($lesson["day"] == $day && $lesson["caption"] == $caption) {
+          // There may be several lessons for one day and caption,  because we
+          // have cycles
+          $stableLessons[] = $lesson;
+        }
+      }
+
+      $found = count($stableLessons);
+      if($found < 1) {
+        return false;
+      } else {
+        foreach($stableLessons as $lesson) {
+          if($found > 1) {
+            if($lesson["cycle"] != $actual["cycle"]) continue;
+          }
+
+          if(
+            $lesson["type"]       == $actual["type"]        &&
+            $lesson["short"]      == $actual["short"]       &&
+            $lesson["steacher"]   == $actual["steacher"]    &&
+            $lesson["teacher"]    == $actual["teacher"]     &&
+            $lesson["shortRoom"]  == $actual["shortRoom"]   &&
+            $lesson["shortGroup"] == $actual["shortGroup"]  &&
+            $lesson["group"]      == $actual["group"]
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
     public static function initBakAPI() {
       $db = \Markaos\BakAPI\Util::getDatabase();
 
