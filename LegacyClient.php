@@ -8,6 +8,7 @@ namespace Markaos\BakAPI {
     private $hash = null;
     private $data = null;
     private $timetableCache = null;
+    private $subjectsCache = null;
 
     public function debug($action) {
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -158,10 +159,41 @@ namespace Markaos\BakAPI {
         return false;
       }
 
-      return [];
+      // We need subjects table to determine shortened name for subject
+      $subjects = $this->loadSubjects();
+
+      $arr = array();
+      foreach($xml->predmety->children() as $subject) {
+        // Get subject shortcut
+        $sub = "";
+        foreach($subjects as $k => $subj) {
+          if($subj["name"] == (string) $subject->jmeno) {
+            $sub = $subj["short"];
+            unset($subjects[$k]);
+            break;
+          }
+        }
+
+        foreach($subject->znamky->children() as $grade) {
+          $arr[] = [
+            "subject"     => (string) $sub,
+            "title"       => (string) $grade->caption,
+            "description" => (string) $grade->notice,
+            "grade"       => (string) $grade->znamka,
+            "weight"      => (int)    $grade->vaha,
+            "date"        => (int)    \strtotime((string) $grade->udeleno)
+          ];
+        }
+      }
+
+      return $arr;
     }
 
     private function loadSubjects() {
+      if($this->subjectsCache !== null) {
+        return $this->subjectsCache;
+      }
+
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
         "/login.aspx?hx=" . $this->hash . "&pm=predmety");
 
@@ -176,9 +208,11 @@ namespace Markaos\BakAPI {
         $arr[] = [
           "name" => (string) $subject->nazev,
           "teacher" => (string) $subject->ucitel,
-          "teacherEmail" => (string) $subject->mailuc
+          "teacherEmail" => (string) $subject->mailuc,
+          "short" => (string) $subject->zkratka
         ];
       }
+      $this->subjectsCache = $arr;
       return $arr;
     }
 
