@@ -18,6 +18,8 @@ namespace Markaos\BakAPI {
   define("BAKAPI_SECTION_TIMETABLE_CYCLES", "timetable_cycles");
   define("BAKAPI_SECTION_TIMETABLE_CAPTIONS", "timetable_captions");
 
+  define("BAKAPI_TABLE_USERS", "users");
+
   define("BAKAPI_ERROR_SERVER_UNSUPPORTED", "SERVER_UNSUPPORTED");
   define("BAKAPI_ERROR_LOGIN_FAILED", "LOGIN_FAILED");
 
@@ -167,7 +169,7 @@ namespace Markaos\BakAPI {
       $db = \Markaos\BakAPI\Util::getDatabase();
 
       // Check if this user already exists
-      $res = $db->query("users", ["_ID"],
+      $res = $db->query(BAKAPI_TABLE_USERS, ["_ID"],
         [["column" => "UID", "condition" => "equals", "value" => $uid]], false);
       if($res === false || count($res) == 0) {
         // And create a new record if the user doesn't exist
@@ -189,7 +191,7 @@ namespace Markaos\BakAPI {
           ]
         ];
 
-        $db->insert("users", $columns, $values);
+        $db->insert(BAKAPI_TABLE_USERS, $columns, $values);
       }
 
       return [
@@ -213,7 +215,7 @@ namespace Markaos\BakAPI {
           "value" => $user
         ]
       ];
-      $result = $db->query("users", $columns, $conditions, false);
+      $result = $db->query(BAKAPI_TABLE_USERS, $columns, $conditions, false);
       if(count($result) > 1) {
         // TODO: report database corruption here
       } else if (count($result) < 1) {

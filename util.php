@@ -96,7 +96,7 @@ namespace Markaos\BakAPI {
       ];
       $db->createTable($table, $structure);
 
-      $table = "users";
+      $table = BAKAPI_TABLE_USERS;
       $structure = [
         "UID" => "string:128",
         "client" => "string:64",
