@@ -18,7 +18,7 @@ if(!isset($_GET["formok"])) {
     <input name="name" />
     <br>
     <label for="password">Heslo:</label>
-    <input name="password" />
+    <input name="password" type="password" />
     <input type="hidden" name="formok" value="y" />
     <br>
     <input type="submit" value="Odeslat" />
@@ -38,9 +38,138 @@ if (ob_get_level())
 <head>
   <meta charset="UTF-8" />
   <title>BakAPI</title>
+  <style>
+    .ovrl {background-color: gray;}
+  </style>
 </head>
 <body>
 <?php
+
+// From PHP.net by user mitgath@gmail.com
+function mb_str_pad ($input, $pad_length, $pad_string, $pad_style,
+    $encoding="UTF-8") {
+  return str_pad(
+    $input,
+    strlen($input) - mb_strlen($input,$encoding) + $pad_length,
+    $pad_string,
+    $pad_style
+  );
+}
+
+function print_timetable($timetable, $captions, $cycle) {
+  echo "  <b>" . date("j.n.Y", $cycle["mondayDate"]) . " - " .
+    date("j.n.Y", strtotime("this week friday", $cycle["mondayDate"])) .
+    "</b>\n";
+
+  $t = array();
+  $days = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"];
+  foreach($timetable as $lesson) {
+    $row = 0;
+    foreach($days as $id => $day) {
+      if($day == $lesson["day"]) {
+        $row = $id;
+        break;
+      }
+    }
+
+    $column = 0;
+    foreach($captions as $id => $caption) {
+      if($caption["caption"] == $lesson["caption"]) {
+        $column = $id;
+        break;
+      }
+    }
+
+    if(!isset($t[$row])) {
+      $t[$row] = array();
+    }
+
+    $t[$row][$column] = $lesson;
+  }
+
+  echo "  /-----";
+  //    | Po |
+  foreach ($captions as $caption) {
+    echo "---------------";
+  }
+
+  echo "\\\n";
+  echo "  |    |";
+  foreach ($captions as $caption) {
+    echo mb_str_pad($caption["caption"], 15, " ", STR_PAD_BOTH);
+  }
+  echo "|\n";
+  echo "  |    |";
+  foreach ($captions as $caption) {
+    echo str_pad(
+      $caption["begin"] . "-" . $caption["end"],
+      15, " ", STR_PAD_BOTH
+    );
+  }
+  echo "|\n";
+
+  echo "  |----|";
+  foreach ($captions as $caption) {
+    echo "---------------";
+  }
+  echo "|\n";
+
+  foreach($t as $dayId => $day) {
+    echo "  |    |";
+    foreach($captions as $id => $caption) {
+      if(!isset($day[$id])) {
+        echo "               "; // 15 spaces
+      } else {
+        echo " <b>";
+        if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        echo mb_str_pad($day[$id]["short"], 13, " ", STR_PAD_BOTH);
+        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo "</b> ";
+      }
+    }
+    echo "|\n";
+    echo "  |" . mb_str_pad($days[$dayId], 4, " ", STR_PAD_BOTH) . "|";
+    foreach($captions as $id => $caption) {
+      if(!isset($day[$id])) {
+        echo "               "; // 15 spaces
+      } else {
+        echo " <i>";
+        if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        echo mb_str_pad($day[$id]["steacher"], 13, " ", STR_PAD_BOTH);
+        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo "</i> ";
+      }
+    }
+    echo "|\n";
+    echo "  |    |";
+    foreach($captions as $id => $caption) {
+      if(!isset($day[$id])) {
+        echo "               "; // 15 spaces
+      } else {
+        echo " ";
+        if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        echo " ";
+        echo mb_str_pad($day[$id]["shortRoom"], 5, " ", STR_PAD_RIGHT);
+        echo " ";
+        echo mb_str_pad($day[$id]["shortGroup"], 5, " ", STR_PAD_LEFT);
+        echo " ";
+        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo " ";
+      }
+    }
+    echo "|\n";
+    echo "  |    |";
+    foreach ($captions as $caption) {
+      echo "               "; // 15 spaces
+    }
+    echo "|\n";
+  }
+  echo "  \\-----";
+  foreach ($captions as $caption) {
+    echo "---------------";
+  }
+  echo "/\n";
+}
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -115,7 +244,82 @@ if($client != NULL) {
     flush();
     $arr = $client->load(BAKAPI_SECTION_MESSAGES);
     echo "  <b>Found " . count($arr[BAKAPI_SECTION_MESSAGES]) . " messages</b>\n";
+    echo "Fetching timetable...\n";
     flush();
+    $arr = array();
+    $arr["stable"] = $client->load(BAKAPI_SECTION_TIMETABLE_STABLE);
+    echo "  Permanent timetable loaded...\n";
+    flush();
+    $arr["captions"] = $client->load(BAKAPI_SECTION_TIMETABLE_CAPTIONS);
+    echo "  Captions too...\n";
+    flush();
+    $arr["actual"] = $client->load(BAKAPI_SECTION_TIMETABLE_OVERLAY);
+    echo "  Overlay ready, loading cycles...\n";
+    flush();
+    $arr["cycles"] = $client->load(BAKAPI_SECTION_TIMETABLE_CYCLES);
+    echo "  Finishing it up...\n";
+    echo "\n\n";
+    flush();
+
+    $cycles = $arr["cycles"][BAKAPI_SECTION_TIMETABLE_CYCLES];
+    $captions = $arr["captions"][BAKAPI_SECTION_TIMETABLE_CAPTIONS];
+    $stable = $arr["stable"][BAKAPI_SECTION_TIMETABLE_STABLE];
+    $overlay = $arr["actual"][BAKAPI_SECTION_TIMETABLE_OVERLAY];
+    $merged = $stable;
+
+    $cycle = $cycles[0]["cycle"];
+    foreach($merged as $key => $lesson) {
+      if(isset($lesson["cycle"]) && $lesson["cycle"] != "" &&
+          $lesson["cycle"] != $cycle) {
+        unset($merged[$key]);
+      }
+    }
+
+    foreach($overlay as $ovrl) {
+      if($ovrl["date"] < $cycles[0]["mondayDate"] || $ovrl["date"] >= $cycles[1]["mondayDate"])
+        continue;
+
+      $ovrl["overlay"] = true;
+      $id = \Markaos\BakAPI\Util::getLessonIndexes($merged, $ovrl["day"], $ovrl["caption"]);
+      if(count($id) == 0) {
+        if($ovrl["type"] == "X") {
+          // We are replacing non-existent lesson with empty lesson - something
+          // surely went wrong in the client
+          continue;
+        }
+        $merged[] = $ovrl;
+        continue;
+      }
+      $merged[$id[0]] = $ovrl;
+    }
+
+    print_timetable($merged, $captions, $cycles[0]);
+    echo "\n\n";
+
+    $merged = $stable;
+    $cycle = $cycles[1]["cycle"];
+    foreach($merged as $key => $lesson) {
+      if(isset($lesson["cycle"]) && $lesson["cycle"] != "" &&
+          $lesson["cycle"] != $cycle) {
+        unset($merged[$key]);
+      }
+    }
+
+    foreach($overlay as $ovrl) {
+      if($ovrl["date"] < $cycles[1]["mondayDate"] || $ovrl["date"] >= $cycles[2]["mondayDate"])
+        continue;
+
+      $ovrl["overlay"] = true;
+      $id = \Markaos\BakAPI\Util::getLessonIndexes($merged, $ovrl["day"], $ovrl["caption"]);
+      if(count($id) == 0) {
+        $merged[] = $ovrl;
+        continue;
+      }
+      $merged[$id[0]] = $ovrl;
+    }
+
+    print_timetable($merged, $captions, $cycles[1]);
+
   } else {
     echo "Login failed\n";
     flush();
@@ -125,6 +329,8 @@ if($client != NULL) {
   flush();
 }
 
+echo "\n";
+echo "Peak memory usage: " . ceil((memory_get_peak_usage() / 1024)) . " kB\n";
 echo "</pre>\n";
 ?>
 </body>
