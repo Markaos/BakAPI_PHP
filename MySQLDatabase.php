@@ -38,6 +38,7 @@ namespace Markaos\BakAPI {
       foreach ($columns as $col) {
         if(!$tmp) $sql .= ", ";
         $tmp = false;
+        $col = $col == "_ID" ? $col : "field_" . $col;
         $sql .= $col;
       }
 
@@ -48,7 +49,8 @@ namespace Markaos\BakAPI {
       foreach ($conditions as $cond) {
         if(!$tmp) $sql .= " AND ";
         $tmp = false;
-        $sql .= "field_" . $cond["column"] . " ";
+        $key = $cond["column"] == "_ID" ? "_ID" : "field_" . $cond["column"];
+        $sql .= $key . " ";
         switch($cond["condition"]) {
           case "equals":
             $sql .= "=";
@@ -77,6 +79,12 @@ namespace Markaos\BakAPI {
 
       $r = array();
       foreach ($result as $row) {
+        foreach($row as $key => $value) {
+          if($key != "_ID") {
+            unset($row[$key]);
+            $row[substr($key, 6)] = $value;
+          }
+        }
         $r[] = $row;
       }
 
