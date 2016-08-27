@@ -40,6 +40,7 @@ if (ob_get_level())
   <title>BakAPI</title>
   <style>
     .ovrl {background-color: gray;}
+    .stable {background-color: lightgray;}
   </style>
 </head>
 <body>
@@ -122,8 +123,9 @@ function print_timetable($timetable, $captions, $cycle) {
       } else {
         echo " <b>";
         if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        else echo "<span class=\"stable\">";
         echo mb_str_pad($day[$id]["short"], 13, " ", STR_PAD_BOTH);
-        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo "</span>";
         echo "</b> ";
       }
     }
@@ -135,8 +137,9 @@ function print_timetable($timetable, $captions, $cycle) {
       } else {
         echo " <i>";
         if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        else echo "<span class=\"stable\">";
         echo mb_str_pad($day[$id]["steacher"], 13, " ", STR_PAD_BOTH);
-        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo "</span>";
         echo "</i> ";
       }
     }
@@ -148,12 +151,13 @@ function print_timetable($timetable, $captions, $cycle) {
       } else {
         echo " ";
         if(isset($day[$id]["overlay"])) echo "<span class=\"ovrl\">";
+        else echo "<span class=\"stable\">";
         echo " ";
         echo mb_str_pad($day[$id]["shortRoom"], 5, " ", STR_PAD_RIGHT);
         echo " ";
         echo mb_str_pad($day[$id]["shortGroup"], 5, " ", STR_PAD_LEFT);
         echo " ";
-        if(isset($day[$id]["overlay"])) echo "</span>";
+        echo "</span>";
         echo " ";
       }
     }
