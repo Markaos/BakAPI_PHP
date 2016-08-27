@@ -499,10 +499,10 @@ namespace Markaos\BakAPI {
       return $data;
     }
 
-    // Get hashsum of the database. Used for veryfying patching process
+    // Get checksum of the database. Used for veryfying patching process
     //
     // @user    User ID
-    // @return  Database hashsum
+    // @return  Database checksum
     public static function getFullDatabaseHash($user) {
 
     }
