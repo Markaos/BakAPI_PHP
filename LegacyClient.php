@@ -306,7 +306,7 @@ namespace Markaos\BakAPI {
       foreach($xml->rozvrh->dny->children() as $day) {
         if(!isset($day->zkratka)) continue;
         $dayShort = (string) $day->zkratka;
-        foreach ($day->hodiny->children as $lesson) {
+        foreach ($day->hodiny->children() as $lesson) {
           // Filter out free hours
           if((string) $lesson->typ == "X") continue;
           $short = "";
@@ -353,6 +353,7 @@ namespace Markaos\BakAPI {
 
     private function loadTimetableOverlay() {
       $stable = $this->loadStableTimetable();
+      $captions = $this->loadTimetableCaptions();
 
       // This is really simple in PHP
       $thisMonday = \date("Ymd", \strtotime("this week monday 00:00:00"));
@@ -367,14 +368,38 @@ namespace Markaos\BakAPI {
       }
 
       $arr = array();
+      $cycle = (string) $xml->rozvrh->zkratkacyklu;
       foreach($xml->rozvrh->dny->children() as $day) {
         if(!isset($day->zkratka)) continue;
         $dayShort = (string) $day->zkratka;
         $nextMonday = \date("Ymd", \strtotime("next week monday 00:00:00",
           \strtotime((string) $day->datum)));
-        foreach ($day->hodiny->children as $lesson) {
-          // Filter out free hours
-          if((string) $lesson->typ == "X") continue;
+
+        $i = 0;
+        foreach ($day->hodiny->children() as $lesson) {
+          if((string) $lesson->typ == "X") {
+            $ids = \Markaos\BakAPI\Util::getLessonIndexes($stable, $dayShort,
+              $captions[$i]["caption"]);
+            foreach ($ids as $id) {
+              $l = $stable[$id];
+              if(!isset($l["cycle"]) || $l["cycle"] == "" ||
+                  $l["cycle"] == $cycle) {
+                $arr[] = [
+                  "caption"     => (string) $captions[$i]["caption"],
+                  "day"         => (string) $dayShort,
+                  "type"        => (string) $lesson->typ,
+                  "short"       => "",
+                  "steacher"    => "",
+                  "teacher"     => "",
+                  "shortRoom"   => "",
+                  "shortGroup"  => "",
+                  "group"       => "",
+                  "theme"       => "",
+                  "date"        => \strtotime((string) $day->datum)
+                ];
+              }
+            }
+          }
           // TODO: check whether 'A' lessons contain captions
           $short = "";
           if((string) $lesson->typ == "A") {
@@ -396,9 +421,10 @@ namespace Markaos\BakAPI {
             "date"        => \strtotime((string) $day->datum)
           ];
 
-          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
+          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a, $cycle)) {
             $arr[] = $a;
           }
+          $i++;
         }
       }
 
@@ -411,12 +437,36 @@ namespace Markaos\BakAPI {
         return false;
       }
 
+      $cycle = (string) $xml->rozvrh->zkratkacyklu;
       foreach($xml->rozvrh->dny->children() as $day) {
         if(!isset($day->zkratka)) continue;
         $dayShort = (string) $day->zkratka;
-        foreach ($day->hodiny->children as $lesson) {
-          // Filter out free hours
-          if((string) $lesson->typ == "X") continue;
+
+        $i = 0;
+        foreach ($day->hodiny->children() as $lesson) {
+          if((string) $lesson->typ == "X") {
+            $ids = \Markaos\BakAPI\Util::getLessonIndexes($stable, $dayShort,
+              $captions[$i]["caption"]);
+            foreach ($ids as $id) {
+              $l = $stable[$id];
+              if(!isset($l["cycle"]) || $l["cycle"] == "" ||
+                  $l["cycle"] == $cycle) {
+                $arr[] = [
+                  "caption"     => (string) $captions[$i]["captions"],
+                  "day"         => (string) $dayShort,
+                  "type"        => (string) $lesson->typ,
+                  "short"       => "",
+                  "steacher"    => "",
+                  "teacher"     => "",
+                  "shortRoom"   => "",
+                  "shortGroup"  => "",
+                  "group"       => "",
+                  "theme"       => "",
+                  "date"        => \strtotime((string) $day->datum)
+                ];
+              }
+            }
+          }
           // TODO: check whether 'A' lessons contain captions
           $short = "";
           if((string) $lesson->typ == "A") {
@@ -438,7 +488,7 @@ namespace Markaos\BakAPI {
             "date"        => \strtotime((string) $day->datum)
           ];
 
-          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a)) {
+          if(!\Markaos\BakAPI\Util::compareLessons($stable, $a, $cycle)) {
             $arr[] = $a;
           }
         }
