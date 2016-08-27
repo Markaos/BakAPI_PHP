@@ -22,8 +22,8 @@ namespace Markaos\BakAPI {
         if(!$tmp) $sql .= ", ";
         $tmp = false;
         $type = explode(':', $type . ":x");
-        $sql .= $key . " " . ($type[0] == "int" ? "INT (11)" :
-          "TEXT (" . $type[1] . ")");
+        $sql .= "field_$key" . " " . ($type[0] == "int" ? "INT (11)" :
+          "VARCHAR (" . $type[1] . ")");
       }
       $sql .= ");";
 
@@ -48,7 +48,7 @@ namespace Markaos\BakAPI {
       foreach ($conditions as $cond) {
         if(!$tmp) $sql .= " AND ";
         $tmp = false;
-        $sql .= $cond["column"] . " ";
+        $sql .= "field_" . $cond["column"] . " ";
         switch($cond["condition"]) {
           case "equals":
             $sql .= "=";
@@ -92,7 +92,7 @@ namespace Markaos\BakAPI {
       foreach($columns as $col) {
         if(!$tmp) $sql .= ", ";
         $tmp = false;
-        $sql .= $col;
+        $sql .= "field_" . $col;
       }
       $sql .= ") VALUES ";
 
