@@ -250,7 +250,12 @@ namespace Markaos\BakAPI {
           BAKAPI_SECTION_GRADES,
           BAKAPI_SECTION_SUBJECTS,
           BAKAPI_SECTION_MESSAGES,
-          BAKAPI_SECTION_EVENTS
+          BAKAPI_SECTION_EVENTS,
+          BAKAPI_SECTION_HOMEWORK,
+          BAKAPI_SECTION_TIMETABLE_STABLE,
+          BAKAPI_SECTION_TIMETABLE_OVERLAY,
+          BAKAPI_SECTION_TIMETABLE_CYCLES,
+          BAKAPI_SECTION_TIMETABLE_CAPTIONS
         ])
       );
       // New data ready - this didn't even hurt
@@ -368,6 +373,127 @@ namespace Markaos\BakAPI {
       $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
       foreach($tmp as $event) {
         $data[BAKAPI_SECTION_EVENTS][] = $event;
+      }
+
+      // Homework...
+      $columns = [
+        "subject",
+        "issued",
+        "deadline",
+        "state",
+        "description"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_HOMEWORK,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $homework) {
+        $data[BAKAPI_SECTION_HOMEWORK][] = $homework;
+      }
+
+      // Stable timetable...
+      $columns = [
+        "caption",
+        "day",
+        "type",
+        "short",
+        "steacher",
+        "teacher",
+        "shortRoom",
+        "shortGroup",
+        "group",
+        "cycle"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_STABLE,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $lesson) {
+        $data[BAKAPI_SECTION_TIMETABLE_STABLE][] = $lesson;
+      }
+
+      // Timetable overlay...
+      $columns = [
+        "caption",
+        "day",
+        "type",
+        "short",
+        "steacher",
+        "teacher",
+        "shortRoom",
+        "shortGroup",
+        "group",
+        "theme",
+        "date"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_OVERLAY,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $lesson) {
+        $data[BAKAPI_SECTION_TIMETABLE_OVERLAY][] = $lesson;
+      }
+
+      // Timetable cycles...
+      $columns = [
+        "mondayDate",
+        "cycle"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_CYCLES,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $cycle) {
+        $data[BAKAPI_SECTION_TIMETABLE_CYCLES][] = $cycle;
+      }
+
+      // And timetable captions
+      $columns = [
+        "caption",
+        "begin",
+        "end"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_CAPTIONS,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $caption) {
+        $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS][] = $caption;
       }
 
       return $data;
