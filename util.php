@@ -106,6 +106,14 @@ namespace Markaos\BakAPI {
       ];
       $db->createTable($table, $structure);
 
+      $table = BAKAPI_TABLE_CHANGES;
+      $structure = [
+        "UID" => "string:128",
+        "seriaized" => "string:4096",
+        "date" => "int"
+      ];
+      $db->createTable($table, $structure);
+
       $table = BAKAPI_SECTION_GRADES;
       $structure = [
         "UID"         => "string:128",

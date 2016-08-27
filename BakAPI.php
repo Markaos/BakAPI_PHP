@@ -18,6 +18,7 @@ namespace Markaos\BakAPI {
   define("BAKAPI_SECTION_TIMETABLE_CYCLES", "timetable_cycles");
   define("BAKAPI_SECTION_TIMETABLE_CAPTIONS", "timetable_captions");
 
+  define("BAKAPI_TABLE_CHANGES", "changes");
   define("BAKAPI_TABLE_USERS", "users");
 
   define("BAKAPI_ERROR_SERVER_UNSUPPORTED", "SERVER_UNSUPPORTED");
