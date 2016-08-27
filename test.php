@@ -115,7 +115,16 @@ function print_timetable($timetable, $captions, $cycle) {
   }
   echo "|\n";
 
+  $first = true;
   foreach($t as $dayId => $day) {
+    if(!$first) {
+      echo "  |    |";
+      foreach ($captions as $caption) {
+        echo "               "; // 15 spaces
+      }
+      echo "|\n";
+    }
+    $first = false;
     echo "  |    |";
     foreach($captions as $id => $caption) {
       if(!isset($day[$id])) {
@@ -160,11 +169,6 @@ function print_timetable($timetable, $captions, $cycle) {
         echo "</span>";
         echo " ";
       }
-    }
-    echo "|\n";
-    echo "  |    |";
-    foreach ($captions as $caption) {
-      echo "               "; // 15 spaces
     }
     echo "|\n";
   }
