@@ -35,7 +35,8 @@ namespace Markaos\BakAPI {
 
     public function createTable($tablename, $structure) {
       $sql = "CREATE TABLE IF NOT EXISTS $tablename (
-        _ID INT (11) AUTO_INCREMENT PRIMARY KEY, ";
+        _ID INT (11) AUTO_INCREMENT PRIMARY KEY,
+        _DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ";
 
       $tmp = true;
       foreach($structure as $key => $type) {
