@@ -16,10 +16,14 @@ namespace Markaos\BakAPI {
         $username = $settings["mysql_username"];
         $password = $settings["mysql_password"];
       } else if ($purpose == "log") {
-        $host = $settings["mysql_host_log"];
-        $db = $settings["mysql_db_log"];
-        $username = $settings["mysql_username_log"];
-        $password = $settings["mysql_password_log"];
+        $host = isset($settings["mysql_host_log"]) ?
+          $settings["mysql_host_log"] : $settings["mysql_host"];
+        $db = isset($settings["mysql_db_log"]) ?
+          $settings["mysql_db_log"] : $settings["mysql_db"];
+        $username = isset($settings["mysql_username_log"]) ?
+          $settings["mysql_username_log"] : $settings["mysql_username"];
+        $password = isset($settings["mysql_password_log"]) ?
+          $settings["mysql_password_log"] : $settings["mysql_password"];
       }
 
       $this->db = new \PDO(
