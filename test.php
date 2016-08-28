@@ -330,10 +330,12 @@ if($client != NULL) {
     print_timetable($merged, $captions, $cycles[1]);
 
   } else {
+    \Markaos\BakAPI\Log::w(basename(__FILE__), "Login failed");
     echo "Login failed\n";
     flush();
   }
 } else {
+  \Markaos\BakAPI\Log::w(basename(__FILE__), "Server not available");
   echo "Server not available\n";
   flush();
 }
