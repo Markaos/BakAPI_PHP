@@ -4,12 +4,28 @@ namespace Markaos\BakAPI {
   class MySQLDatabase implements \Markaos\BakAPI\IDatabase {
     private $db;
 
-    public function __construct() {
+    public function __construct($purpose = "general") {
       $settings = \Markaos\BakAPI\Util::getSettings();
+      $host = "";
+      $db = "";
+      $username = "";
+      $password = "";
+      if($purpose == "general") {
+        $host = $settings["mysql_host"];
+        $db = $settings["mysql_db"];
+        $username = $settings["mysql_username"];
+        $password = $settings["mysql_password"];
+      } else if ($purpose == "log") {
+        $host = $settings["mysql_host_log"];
+        $db = $settings["mysql_db_log"];
+        $username = $settings["mysql_username_log"];
+        $password = $settings["mysql_password_log"];
+      }
+
       $this->db = new \PDO(
-        "mysql:host=" . $settings["mysql_host"] . ";dbname=" . $settings["mysql_db"],
-        $settings["mysql_username"],
-        $settings["mysql_password"]
+        "mysql:host=" . $host . ";dbname=" . $db,
+        $username,
+        $password
       );
     }
 
