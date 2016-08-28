@@ -109,7 +109,7 @@ namespace Markaos\BakAPI {
       $table = BAKAPI_TABLE_CHANGES;
       $structure = [
         "UID" => "string:128",
-        "seriaized" => "string:4096",
+        "serialized" => "string:4096",
         "date" => "int"
       ];
       $db->createTable($table, $structure);
