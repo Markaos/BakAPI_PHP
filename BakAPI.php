@@ -2,6 +2,7 @@
 namespace Markaos\BakAPI {
   require_once "util.php";
   require_once "DiffUtil.php";
+  require_once "LogUtil.php";
   require_once "ProxyClient.php";
   require_once "LegacyClient.php";
   require_once "MySQLDatabase.php";
