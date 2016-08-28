@@ -87,6 +87,18 @@ namespace Markaos\BakAPI {
       return false;
     }
 
+    // Insert data from array to database using keys as column names
+    public static function insertArrayIntoDatabase($db, $table, $data) {
+      $columns = array();
+      $values = array();
+      while(list($column, $value) = each($data)) {
+        $columns[] = $column;
+        $values[] = $value;
+      }
+
+      $db->insert($table, $columns, $values);
+    }
+
     public static function initBakAPI() {
       $db = \Markaos\BakAPI\Util::getDatabase();
 

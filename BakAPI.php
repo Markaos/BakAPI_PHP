@@ -1,6 +1,7 @@
 <?php
 namespace Markaos\BakAPI {
   require_once "util.php";
+  require_once "DiffUtil.php";
   require_once "ProxyClient.php";
   require_once "LegacyClient.php";
   require_once "MySQLDatabase.php";
@@ -262,7 +263,29 @@ namespace Markaos\BakAPI {
       // Old data loading is even simpler:
       $oldData = BakAPI::getFullDatabase($user);
 
-      // TODO: merge them
+      // Merging offloaded to DiffUtil
+      $diffs = \Markaos\BakAPI\DiffUtil::getDifferences($oldData, $newData);
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $columns = [
+        "UID",
+        "serialized"
+      ];
+
+      $values = [
+        [
+          $user,
+          ""
+        ]
+      ];
+
+      while(list(, $diff) = each($diffs)) {
+        $values[0][1] = serialize($diff);
+        $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
+        \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
+          $diff["table"], $diff["data"]);
+      }
+
+      return true;
     }
 
     // Get list of changes since last known change
