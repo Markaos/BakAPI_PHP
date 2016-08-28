@@ -184,6 +184,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 echo "<pre>";
+\Markaos\BakAPI\Log::i(basename(__FILE__), "Running " . basename(__FILE__) . "...");
 echo "Checking settings...\n";
 $settings = \Markaos\BakAPI\Util::getSettings();
 echo $settings["test"] . "\n";
