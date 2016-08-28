@@ -294,6 +294,9 @@ if($client != NULL) {
         if($ovrl["type"] == "X") {
           // We are replacing non-existent lesson with empty lesson - something
           // surely went wrong in the client
+          \Markaos\BakAPI\Log::e(basename(__FILE__),
+            "Replacing non-existent lesson with empty lesson (caption: " .
+            $ovrl["caption"] . "; day: " . $ovrl["day"] . ")");
           continue;
         }
         $merged[] = $ovrl;
