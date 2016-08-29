@@ -402,6 +402,7 @@ namespace Markaos\BakAPI {
                 ];
               }
             }
+            $i++;
             continue;
           }
           // TODO: check whether 'A' lessons contain captions
@@ -470,6 +471,7 @@ namespace Markaos\BakAPI {
                 ];
               }
             }
+            $i++;
             continue;
           }
           // TODO: check whether 'A' lessons contain captions
@@ -496,6 +498,7 @@ namespace Markaos\BakAPI {
           if(!\Markaos\BakAPI\Util::compareLessons($stable, $a, $cycle)) {
             $arr[] = $a;
           }
+          $i++;
         }
       }
 
