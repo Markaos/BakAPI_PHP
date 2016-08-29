@@ -89,7 +89,7 @@ namespace Markaos\BakAPI {
     // @conditions  Array of associative arrays of form
     //              [
     //                "column"    => "columnName"
-    //                "condition" => "equals|greater|lesser"
+    //                "condition" => "equals|g|l|ge|le"
     //                "value"     => "valueToUseAsRightSideOfFormula"
     //              ]
     // @orderBy     Array with two strings:  the first is  column name and the
@@ -336,7 +336,7 @@ namespace Markaos\BakAPI {
       $columns = ["serialized"];
       $conditions = [
         ["column" => "UID", "condition" => "equals", "value" => $user],
-        ["column" => "_ID", "condition" => "greater", "value" => $lastKnownChange]
+        ["column" => "_ID", "condition" => "g", "value" => $lastKnownChange]
       ];
       return $db->query(BAKAPI_TABLE_CHANGES, $columns, $conditions);
     }

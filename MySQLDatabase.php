@@ -76,13 +76,21 @@ namespace Markaos\BakAPI {
           case "equals":
             $sql .= "=";
             break;
-          case "lesser":
+          case "l":
             $sql .= "<";
             break;
-          case "greater":
+          case "g":
             $sql .= ">";
             break;
+          case "ge":
+            $sql .= ">=";
+            break;
+          case "le":
+            $sql .= "<=";
+            break;
           default:
+            \Markaos\BakAPI\Log::critical("MySQL", "Unknown operator used: " .
+              $cond["condition"]);
             throw new Exception("Unknown operator");
             break;
         }
@@ -174,13 +182,21 @@ namespace Markaos\BakAPI {
           case "equals":
             $sql .= "=";
             break;
-          case "lesser":
+          case "l":
             $sql .= "<";
             break;
-          case "greater":
+          case "g":
             $sql .= ">";
             break;
+          case "ge":
+            $sql .= ">=";
+            break;
+          case "le":
+            $sql .= "<=";
+            break;
           default:
+            \Markaos\BakAPI\Log::critical("MySQL", "Unknown operator used: " .
+              $cond["condition"]);
             throw new Exception("Unknown operator");
             break;
         }
