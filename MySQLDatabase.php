@@ -145,7 +145,10 @@ namespace Markaos\BakAPI {
       $res = $query->execute($vals);
       $this->db->commit();
 
-      if($res === false) echo $sql . "\n" . $this->db->errorInfo()[2] . "\n";
+      if($res === false) {
+        \Markaos\BakAPI\Log::critical("MySQL",
+          "Query failed! (\"$sql\", error: " . $this->db->errorInfo()[2] . ")");
+      }
       return $res !== false;
     }
 
