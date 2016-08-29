@@ -1,4 +1,15 @@
 <?php
+// From PHP.net by user mitgath@gmail.com
+function mb_str_pad ($input, $pad_length, $pad_string, $pad_style,
+    $encoding="UTF-8") {
+  return str_pad(
+    $input,
+    strlen($input) - mb_strlen($input,$encoding) + $pad_length,
+    $pad_string,
+    $pad_style
+  );
+}
+
 class TestUtil {
   public static function print_timetable($timetable, $captions, $cycle) {
     echo "  <b>" . date("j.n.Y", $cycle["mondayDate"]) . " - " .

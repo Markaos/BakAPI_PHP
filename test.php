@@ -47,17 +47,6 @@ if (ob_get_level())
 <body>
 <?php
 
-// From PHP.net by user mitgath@gmail.com
-function mb_str_pad ($input, $pad_length, $pad_string, $pad_style,
-    $encoding="UTF-8") {
-  return str_pad(
-    $input,
-    strlen($input) - mb_strlen($input,$encoding) + $pad_length,
-    $pad_string,
-    $pad_style
-  );
-}
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -153,7 +142,7 @@ if($client != NULL) {
     $captions = $arr["captions"][BAKAPI_SECTION_TIMETABLE_CAPTIONS];
     $stable = $arr["stable"][BAKAPI_SECTION_TIMETABLE_STABLE];
     $overlay = $arr["actual"][BAKAPI_SECTION_TIMETABLE_OVERLAY];
-    
+
     $cycle = $cycles[0];
     $nextCycle = $cycles[1];
     $merged = TestUtil::merge_timetable($stable, $overlay, $cycle, $nextCycle);
