@@ -241,9 +241,10 @@ namespace Markaos\BakAPI {
     // Read new or changed data from server and store them to DB (both as full
     // DB and as transactions)
     //
-    // @user    User ID
-    // @return  True if everything went OK, false otherwise
-    public static function syncData($user) {
+    // @user      User ID
+    // @sections  Array containing section names or "ALL" to load all sections
+    // @return    True if everything went OK, false otherwise
+    public static function syncData($user, $sections = "ALL") {
       // How will  we do that?  It's simple,  we'll  just  load  client (using
       // getClient()),  make array  from database and  do some magic  to merge
       // these two while saving all changes  we made to allow users to  simply
@@ -259,21 +260,34 @@ namespace Markaos\BakAPI {
         return false;
       }
 
-      $newData = $client->load(implode(',', [
-          BAKAPI_SECTION_GRADES,
-          BAKAPI_SECTION_SUBJECTS,
-          BAKAPI_SECTION_MESSAGES,
-          BAKAPI_SECTION_EVENTS,
-          BAKAPI_SECTION_HOMEWORK,
-          BAKAPI_SECTION_TIMETABLE_STABLE,
-          BAKAPI_SECTION_TIMETABLE_OVERLAY,
-          BAKAPI_SECTION_TIMETABLE_CYCLES,
-          BAKAPI_SECTION_TIMETABLE_CAPTIONS
-        ])
-      );
+      $newData = array();
+      if($sections === "ALL") {
+        $newData = $client->load(implode(',', [
+            BAKAPI_SECTION_GRADES,
+            BAKAPI_SECTION_SUBJECTS,
+            BAKAPI_SECTION_MESSAGES,
+            BAKAPI_SECTION_EVENTS,
+            BAKAPI_SECTION_HOMEWORK,
+            BAKAPI_SECTION_TIMETABLE_STABLE,
+            BAKAPI_SECTION_TIMETABLE_OVERLAY,
+            BAKAPI_SECTION_TIMETABLE_CYCLES,
+            BAKAPI_SECTION_TIMETABLE_CAPTIONS
+          ])
+        );
+      } else {
+        $newData = $client->load(implode(',', $sections));
+      }
       // New data ready - this didn't even hurt
-      // Old data loading is even simpler:
-      $oldData = BakAPI::getFullDatabase($user);
+
+      $db = BakAPI::getFullDatabase($user);
+      $oldData = array();
+      if(is_array($sections)) {
+        foreach($sections as $section) {
+          $oldData[$section] = $db[$section];
+        }
+      } else {
+        $oldData = $db;
+      }
 
       // Merging offloaded to DiffUtil
       $diffs = \Markaos\BakAPI\DiffUtil::getDifferencesBakAPI($oldData, $newData);
