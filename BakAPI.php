@@ -563,7 +563,19 @@ namespace Markaos\BakAPI {
     // @user    User ID
     // @return  Database checksum
     public static function getFullDatabaseHash($user) {
-
+      $db = self::getFullDatabase($user);
+      $grades = DiffUtil::getChecksum($db, BAKAPI_SECTION_GRADES);
+      $subjects = DiffUtil::getChecksum($db, BAKAPI_SECTION_SUBJECTS);
+      $messages = DiffUtil::getChecksum($db, BAKAPI_SECTION_MESSAGES);
+      $events = DiffUtil::getChecksum($db, BAKAPI_SECTION_EVENTS);
+      $homework = DiffUtil::getChecksum($db, BAKAPI_SECTION_HOMEWORK);
+      $timeStable = DiffUtil::getChecksum($db, BAKAPI_SECTION_TIMETABLE_STABLE);
+      $timeOver = DiffUtil::getChecksum($db, BAKAPI_SECTION_TIMETABLE_OVERLAY);
+      $timeCycles = DiffUtil::getChecksum($db, BAKAPI_SECTION_TIMETABLE_CYCLES);
+      $timeCap = DiffUtil::getChecksum($db, BAKAPI_SECTION_TIMETABLE_CAPTIONS);
+      return \hash("sha256",  $grades . $subjects . $messages . $events .
+                              $homework . $timeStable . $timeOver .
+                              $timeCycles . $timeCap);
     }
   }
 }
