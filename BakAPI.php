@@ -269,7 +269,7 @@ namespace Markaos\BakAPI {
       $oldData = BakAPI::getFullDatabase($user);
 
       // Merging offloaded to DiffUtil
-      $diffs = \Markaos\BakAPI\DiffUtil::getDifferences($oldData, $newData);
+      $diffs = \Markaos\BakAPI\DiffUtil::getDifferencesBakAPI($oldData, $newData);
       $db = \Markaos\BakAPI\Util::getDatabase();
       $columns = [
         "UID",
@@ -287,6 +287,7 @@ namespace Markaos\BakAPI {
         if($diff["type"] == "a") {
           $values[0][1] = serialize($diff);
           $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
+          $diff["data"]["UID"] = $user;
           \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
             $diff["table"], $diff["data"]);
           \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
@@ -316,6 +317,15 @@ namespace Markaos\BakAPI {
     public static function getFullDatabase($user) {
       $db = \Markaos\BakAPI\Util::getDatabase();
       $data = array();
+      $data[BAKAPI_SECTION_GRADES] = array();
+      $data[BAKAPI_SECTION_SUBJECTS] = array();
+      $data[BAKAPI_SECTION_MESSAGES] = array();
+      $data[BAKAPI_SECTION_EVENTS] = array();
+      $data[BAKAPI_SECTION_HOMEWORK] = array();
+      $data[BAKAPI_SECTION_TIMETABLE_STABLE] = array();
+      $data[BAKAPI_SECTION_TIMETABLE_OVERLAY] = array();
+      $data[BAKAPI_SECTION_TIMETABLE_CYCLES] = array();
+      $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS] = array();
 
       // Let's start with grades
       $columns = [
@@ -402,8 +412,10 @@ namespace Markaos\BakAPI {
         ]
       ];
 
-      $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
+      $tmp = $db->query(BAKAPI_SECTION_EVENTS, $columns, $conditions, "_ID ASC");
       foreach($tmp as $event) {
+        $event["date"] = (int) $event["date"];
+        $event["show"] = (int) $event["show"];
         $data[BAKAPI_SECTION_EVENTS][] = $event;
       }
 
@@ -484,6 +496,7 @@ namespace Markaos\BakAPI {
       $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_OVERLAY,
         $columns, $conditions, "_ID ASC");
       foreach($tmp as $lesson) {
+        $lesson["date"] = (int) $lesson["date"];
         $data[BAKAPI_SECTION_TIMETABLE_OVERLAY][] = $lesson;
       }
 
@@ -504,6 +517,7 @@ namespace Markaos\BakAPI {
       $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_CYCLES,
         $columns, $conditions, "_ID ASC");
       foreach($tmp as $cycle) {
+        $cycle["mondayDate"] = (int) $cycle["mondayDate"];
         $data[BAKAPI_SECTION_TIMETABLE_CYCLES][] = $cycle;
       }
 
