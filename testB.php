@@ -27,7 +27,7 @@ echo "Synchronizing...\n";
 flush();
 \Markaos\BakAPI\BakAPI::syncData($res["result"]);
 $data = \Markaos\BakAPI\BakAPI::getFullDatabase($res["result"]);
-echo "  <b>Done</b> (TransactionID=" . $data["transaction"] . ")\n";
+echo "  <b>Done</b> (TransactionID=" . $data["transaction"] . ";Hash=" . $data["hash"] . ")\n";
 echo "Loading timetable...\n\n";
 flush();
 $cycleNow = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][0];

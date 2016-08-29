@@ -569,6 +569,8 @@ namespace Markaos\BakAPI {
         $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS][] = $caption;
       }
 
+      $data["hash"] = self::getFullDatabaseHash($data);
+
       return $data;
     }
 
@@ -576,8 +578,7 @@ namespace Markaos\BakAPI {
     //
     // @user    User ID
     // @return  Database checksum
-    public static function getFullDatabaseHash($user) {
-      $db = self::getFullDatabase($user);
+    public static function getFullDatabaseHash($db) {
       $grades = DiffUtil::getChecksum($db, BAKAPI_SECTION_GRADES);
       $subjects = DiffUtil::getChecksum($db, BAKAPI_SECTION_SUBJECTS);
       $messages = DiffUtil::getChecksum($db, BAKAPI_SECTION_MESSAGES);
