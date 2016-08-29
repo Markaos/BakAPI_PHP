@@ -186,7 +186,7 @@ namespace Markaos\BakAPI {
 
       $this->db->beginTransaction();
       $query = $this->db->prepare($sql);
-      $res = $query->execute($vals);
+      $res = $query->execute($values);
       $this->db->commit();
 
       if($res === false) {
