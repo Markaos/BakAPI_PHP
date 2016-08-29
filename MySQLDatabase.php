@@ -164,7 +164,7 @@ namespace Markaos\BakAPI {
       return $res !== false;
     }
 
-    public function modify($table, $ids, $columns, $values) {
+    public function modify($table, $conditions, $columns, $values) {
       // TODO: stub
     }
 

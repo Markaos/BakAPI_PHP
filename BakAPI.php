@@ -108,12 +108,12 @@ namespace Markaos\BakAPI {
 
     // Modify data in database
     //
-    // @table     Table name
-    // @ids       IDs of records to be modified
-    // @columns   Columns to be modified (array)
-    // @values    Values of modified columns (array of arrays)
-    // @return    True on success, false otherwise
-    public function modify($table, $ids, $columns, $values);
+    // @table       Table name
+    // @conditions  Rows matching these conditions will be modified
+    // @columns     Columns to be modified (array)
+    // @values      Values of modified columns (array)
+    // @return      True on success, false otherwise
+    public function modify($table, $conditions, $columns, $values);
 
     // Remove data from database
     //
