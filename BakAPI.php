@@ -291,14 +291,20 @@ namespace Markaos\BakAPI {
       ];
 
       while(list(, $diff) = each($diffs)) {
+        $values[0][1] = serialize($diff);
+        $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
+        $diff["data"]["UID"] = $user;
+
         if($diff["type"] == "a") {
-          $values[0][1] = serialize($diff);
-          $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
-          $diff["data"]["UID"] = $user;
           \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
             $diff["table"], $diff["data"]);
           \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
             $diff["table"] . " (addition)");
+        } else if ($diff["type"] == "r") {
+          \Markaos\BakAPI\Util::removeArrayFromDatabase($db,
+            $diff["table"], $diff["data"]);
+          \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
+            $diff["table"] . " (removal)");
         }
       }
 
