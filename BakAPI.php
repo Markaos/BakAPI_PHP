@@ -176,6 +176,7 @@ namespace Markaos\BakAPI {
         [["column" => "UID", "condition" => "equals", "value" => $uid]], false);
       if($res === false || count($res) == 0) {
         // And create a new record if the user doesn't exist
+        Log::i("Registration", "Creating new user with UID $uid");
         $columns = [
           "UID",
           "client",
@@ -220,7 +221,8 @@ namespace Markaos\BakAPI {
       ];
       $result = $db->query(BAKAPI_TABLE_USERS, $columns, $conditions, false);
       if(count($result) > 1) {
-        // TODO: report database corruption here
+        \Markaos\BakAPI\Log::e("BakAPI",
+          "Database contains more than one user with UID \"$user\"");
       } else if (count($result) < 1) {
         return false;
       }
