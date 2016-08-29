@@ -96,7 +96,7 @@ namespace Markaos\BakAPI {
     //              second is  sort order  ("ASC"  or  "DESC").  Pass false to
     //              use default sorting
     // @return      Array containing query results (["columnName" => "value"])
-    public function query($table, $columns, $conditions, $orderBy);
+    public function query($table, $columns, $conditions, $orderBy, $limit = 0);
 
     // Insert data into database
     //
@@ -318,7 +318,13 @@ namespace Markaos\BakAPI {
     // @return            Array with modifications  -  refer to documentation
     //                    for exact format
     public static function getChanges($user, $lastKnownChange) {
-
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $columns = ["serialized"];
+      $conditions = [
+        ["column" => "UID", "condition" => "equals", "value" => $user],
+        ["column" => "_ID", "condition" => "greater", "value" => $lastKnownChange]
+      ];
+      return $db->query(BAKAPI_TABLE_CHANGES, $columns, $conditions);
     }
 
     // Get up-to-date database for this user. Called in case the server doesn't
@@ -339,6 +345,14 @@ namespace Markaos\BakAPI {
       $data[BAKAPI_SECTION_TIMETABLE_OVERLAY] = array();
       $data[BAKAPI_SECTION_TIMETABLE_CYCLES] = array();
       $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS] = array();
+
+      $columns = ["_ID"];
+      $conditions = [
+        ["column" => "UID", "condition" => "equals", "value" => $user]
+      ];
+      $orderBy = "_ID DESC";
+      $tmp = $db->query(BAKAPI_TABLE_CHANGES, ["_ID"], $conditions, $orderBy, 1);
+      $data["transaction"] = $tmp[0]["_ID"];
 
       // Let's start with grades
       $columns = [
