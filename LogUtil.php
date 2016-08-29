@@ -69,7 +69,7 @@ namespace Markaos\BakAPI {
         $from = self::$mailName . " <" . self::$mailFrom . ">";
         $to = self::$mailTo;
         $message = "Level: $level\r\nComponent: $component\r\nMessage: $message";
-        mail($to, self::$mailSubject, wordwrap($message, "\r\n"),
+        mail($to, self::$mailSubject, wordwrap($message, 70, "\r\n"),
           "From: $from");
       }
     }
