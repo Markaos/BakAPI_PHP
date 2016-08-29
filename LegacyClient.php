@@ -207,8 +207,8 @@ namespace Markaos\BakAPI {
       foreach ($xml->predmety->children() as $subject) {
         $arr[] = [
           "name" => (string) $subject->nazev,
-          "teacher" => (string) $subject->ucitel,
-          "teacherEmail" => (string) $subject->mailuc,
+          "teachers" => (string) $subject->ucitel,
+          "emails" => (string) $subject->mailuc,
           "short" => (string) $subject->zkratka
         ];
       }
@@ -253,10 +253,13 @@ namespace Markaos\BakAPI {
       foreach ($xml->akceall->children() as $event) {
         $arr[] = [
           "name" => (string) $event->nazev,
-          "date" => \strtotime((string) $event->datum),
-          "time" => (string) $event->cas,
-          "desc" => (string) $event->popis,
-          "show" => (string) $event->zobrazit
+          "description" => (string) $event->popis,
+          "timerange" => (string) $event->cas,
+          "rooms" => (string) $event->promistnosti,
+          "teachers" => (string) $event->proucitele,
+          "classes" => (string) $event->protridy,
+          "show" => (int) $event->zobrazit,
+          "date" => \strtotime((string) $event->datum)
         ];
       }
       return $arr;
