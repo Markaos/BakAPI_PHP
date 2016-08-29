@@ -12,6 +12,10 @@ namespace Markaos\BakAPI {
     ]; // Enough space for future additions
     private static $saveLevel = null;
     private static $mailLevel = null;
+    private static $mailFrom = null;
+    private static $mailName = null;
+    private static $mailTo = null;
+    private static $mailSubject = null;
 
     private static function init() {
       if(self::$db === null) {
@@ -25,6 +29,10 @@ namespace Markaos\BakAPI {
         self::$table = $settings["log_table"];
         self::$saveLevel = $settings["log_save_level"];
         self::$mailLevel = $settings["log_mail_level"];
+        self::$mailFrom = $settings["log_mail_sender_email"];
+        self::$mailName = $settings["log_mail_sender_name"];
+        self::$mailTo = $settings["log_mail_to"];
+        self::$mailSubject = $settings["log_mail_subject"];
       }
     }
 
@@ -55,6 +63,14 @@ namespace Markaos\BakAPI {
       if(self::$levels[$level] >= self::$levels[self::$saveLevel]) {
         self::$db->insert(self::$table, ["level", "component", "message"],
           [[$level, $component, $message]]);
+      }
+
+      if(self::$levels[$level] >= self::$levels[self::$mailLevel]) {
+        $from = self::$mailName . " <" . self::$mailFrom . ">";
+        $to = self::$mailTo;
+        $message = "Level: $level\r\nComponent: $component\r\nMessage: $message";
+        mail($to, self::$mailSubject, wordwrap($message, "\r\n"),
+          "From: $from");
       }
     }
   }
