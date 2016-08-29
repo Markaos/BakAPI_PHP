@@ -52,7 +52,7 @@ namespace Markaos\BakAPI {
       return $res !== false;
     }
 
-    public function query($table, $columns, $conditions, $orderBy) {
+    public function query($table, $columns, $conditions, $orderBy, $limit = 0) {
       $sql = "SELECT ";
       $tmp = true;
 
@@ -92,6 +92,10 @@ namespace Markaos\BakAPI {
 
       if($orderBy !== false) {
         $sql .= " ORDER BY $orderBy";
+      }
+
+      if($limit !== 0) {
+        $sql .= " LIMIT $limit";
       }
 
       $query = $this->db->prepare($sql);
