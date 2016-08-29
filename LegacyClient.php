@@ -402,6 +402,7 @@ namespace Markaos\BakAPI {
                 ];
               }
             }
+            continue;
           }
           // TODO: check whether 'A' lessons contain captions
           $short = "";
