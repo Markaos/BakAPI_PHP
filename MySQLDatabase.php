@@ -155,6 +155,46 @@ namespace Markaos\BakAPI {
     public function modify($table, $ids, $columns, $values) {
       // TODO: stub
     }
+
+    public function remove($table, $conditions) {
+      $sql = "DELETE FROM $table WHERE ";
+
+      $values = array();
+      $tmp = true;
+      foreach ($conditions as $cond) {
+        if(!$tmp) $sql .= " AND ";
+        $tmp = false;
+        $key = $cond["column"] == "_ID" ? "_ID" : "field_" . $cond["column"];
+        $sql .= $key . " ";
+        switch($cond["condition"]) {
+          case "equals":
+            $sql .= "=";
+            break;
+          case "lesser":
+            $sql .= "<";
+            break;
+          case "greater":
+            $sql .= ">";
+            break;
+          default:
+            throw new Exception("Unknown operator");
+            break;
+        }
+        $sql .= " ?";
+        $values[] = $cond["value"];
+      }
+
+      $this->db->beginTransaction();
+      $query = $this->db->prepare($sql);
+      $res = $query->execute($vals);
+      $this->db->commit();
+
+      if($res === false) {
+        \Markaos\BakAPI\Log::critical("MySQL",
+          "Query failed! (\"$sql\", error: " . $this->db->errorInfo()[2] . ")");
+      }
+      return $res !== false;
+    }
   }
 }
 ?>

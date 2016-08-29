@@ -114,6 +114,13 @@ namespace Markaos\BakAPI {
     // @values    Values of modified columns (array of arrays)
     // @return    True on success, false otherwise
     public function modify($table, $ids, $columns, $values);
+
+    // Remove data from database
+    //
+    // @table       Table name
+    // @conditions  Rows matching these conditions will be removed
+    // @return      True on success, false otherwise
+    public function remove($table, $conditions);
   }
 
   // Primary class of this library, should be the only one used from outside
