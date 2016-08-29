@@ -91,7 +91,7 @@ namespace Markaos\BakAPI {
       }
 
       if($orderBy !== false) {
-        $sql .= " $orderBy";
+        $sql .= " ORDER BY $orderBy";
       }
 
       $query = $this->db->prepare($sql);
@@ -101,11 +101,12 @@ namespace Markaos\BakAPI {
       $r = array();
       foreach ($result as $row) {
         foreach($row as $key => $value) {
-          if($key != "_ID") {
+          if($key != "_ID" && $key != "_DATE") {
             unset($row[$key]);
             $row[substr($key, 6)] = $value;
           }
         }
+        unset($row[0]);
         $r[] = $row;
       }
 
@@ -144,6 +145,7 @@ namespace Markaos\BakAPI {
       $res = $query->execute($vals);
       $this->db->commit();
 
+      if($res === false) echo $sql . "\n" . $this->db->errorInfo()[2] . "\n";
       return $res !== false;
     }
 
