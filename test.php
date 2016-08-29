@@ -153,62 +153,16 @@ if($client != NULL) {
     $captions = $arr["captions"][BAKAPI_SECTION_TIMETABLE_CAPTIONS];
     $stable = $arr["stable"][BAKAPI_SECTION_TIMETABLE_STABLE];
     $overlay = $arr["actual"][BAKAPI_SECTION_TIMETABLE_OVERLAY];
-    $merged = $stable;
-
-    $cycle = $cycles[0]["cycle"];
-    foreach($merged as $key => $lesson) {
-      if(isset($lesson["cycle"]) && $lesson["cycle"] != "" &&
-          $lesson["cycle"] != $cycle) {
-        unset($merged[$key]);
-      }
-    }
-
-    foreach($overlay as $ovrl) {
-      if($ovrl["date"] < $cycles[0]["mondayDate"] || $ovrl["date"] >= $cycles[1]["mondayDate"])
-        continue;
-
-      $ovrl["overlay"] = true;
-      $id = \Markaos\BakAPI\Util::getLessonIndexes($merged, $ovrl["day"], $ovrl["caption"]);
-      if(count($id) == 0) {
-        if($ovrl["type"] == "X") {
-          // We are replacing non-existent lesson with empty lesson - something
-          // surely went wrong in the client
-          \Markaos\BakAPI\Log::e(basename(__FILE__),
-            "Replacing non-existent lesson with empty lesson (caption: " .
-            $ovrl["caption"] . "; day: " . $ovrl["day"] . ")");
-          continue;
-        }
-        $merged[] = $ovrl;
-        continue;
-      }
-      $merged[$id[0]] = $ovrl;
-    }
-
+    
+    $cycle = $cycles[0];
+    $nextCycle = $cycles[1];
+    $merged = TestUtil::merge_timetable($stable, $overlay, $cycle, $nextCycle);
     TestUtil::print_timetable($merged, $captions, $cycles[0]);
     echo "\n\n";
 
-    $merged = $stable;
-    $cycle = $cycles[1]["cycle"];
-    foreach($merged as $key => $lesson) {
-      if(isset($lesson["cycle"]) && $lesson["cycle"] != "" &&
-          $lesson["cycle"] != $cycle) {
-        unset($merged[$key]);
-      }
-    }
-
-    foreach($overlay as $ovrl) {
-      if($ovrl["date"] < $cycles[1]["mondayDate"] || $ovrl["date"] >= $cycles[2]["mondayDate"])
-        continue;
-
-      $ovrl["overlay"] = true;
-      $id = \Markaos\BakAPI\Util::getLessonIndexes($merged, $ovrl["day"], $ovrl["caption"]);
-      if(count($id) == 0) {
-        $merged[] = $ovrl;
-        continue;
-      }
-      $merged[$id[0]] = $ovrl;
-    }
-
+    $cycle = $cycles[1];
+    $nextCycle = $cycles[2];
+    $merged = TestUtil::merge_timetable($stable, $overlay, $cycle, $nextCycle);
     TestUtil::print_timetable($merged, $captions, $cycles[1]);
 
   } else {
