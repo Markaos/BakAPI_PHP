@@ -99,6 +99,19 @@ namespace Markaos\BakAPI {
       $db->insert($table, $columns, $values);
     }
 
+    public static function removeArrayFromDatabase($db, $table, $data) {
+      $conditions = array();
+      while(list($column, $value) = each($data)) {
+        $c = array();
+        $c["column"] = $column;
+        $c["condition"] = "equals";
+        $c["value"] = $value;
+        $conditions[] = $c;
+      }
+
+      $db->remove($table, $conditions);
+    }
+
     public static function initBakAPI() {
       $db = \Markaos\BakAPI\Util::getDatabase();
 
