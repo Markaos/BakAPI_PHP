@@ -245,6 +245,8 @@ namespace Markaos\BakAPI {
       // Good beginning
       if($client === false) {
         // This user isn't registered yet
+        Log::w("Synchronization",
+          "Trying to synchronize data for non-existent user ($user)");
         return false;
       }
 
@@ -280,10 +282,14 @@ namespace Markaos\BakAPI {
       ];
 
       while(list(, $diff) = each($diffs)) {
-        $values[0][1] = serialize($diff);
-        $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
-        \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
-          $diff["table"], $diff["data"]);
+        if($diff["type"] == "a") {
+          $values[0][1] = serialize($diff);
+          $db->insert(BAKAPI_TABLE_CHANGES, $columns, $values);
+          \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
+            $diff["table"], $diff["data"]);
+          \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
+            $diff["table"] . " (addition)");
+        }
       }
 
       return true;
