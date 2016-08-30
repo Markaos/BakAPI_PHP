@@ -165,7 +165,62 @@ namespace Markaos\BakAPI {
     }
 
     public function modify($table, $conditions, $columns, $values) {
-      // TODO: stub
+      $sql = "UPDATE $table SET ";
+
+      $tmp = true;
+      foreach($columns as $col) {
+        if(!$tmp) $sql .= ", ";
+        $tmp = false;
+        if($col != "_ID" && $col != "_DATE") {
+          $col = "field_$col";
+        }
+        $sql .= "$col = ?";
+      }
+
+      $sql .= " WHERE ";
+
+      $vals = $values;
+      $tmp = true;
+      foreach ($conditions as $cond) {
+        if(!$tmp) $sql .= " AND ";
+        $tmp = false;
+        $key = $cond["column"] == "_ID" ? "_ID" : "field_" . $cond["column"];
+        $sql .= $key . " ";
+        switch($cond["condition"]) {
+          case "equals":
+            $sql .= "=";
+            break;
+          case "l":
+            $sql .= "<";
+            break;
+          case "g":
+            $sql .= ">";
+            break;
+          case "ge":
+            $sql .= ">=";
+            break;
+          case "le":
+            $sql .= "<=";
+            break;
+          default:
+            \Markaos\BakAPI\Log::critical("MySQL", "Unknown operator used: " .
+              $cond["condition"]);
+            throw new Exception("Unknown operator");
+            break;
+        }
+        $sql .= " ?";
+        $vals[] = $cond["value"];
+      }
+
+      $this->db->beginTransaction();
+      $query = $this->db->prepare($sql);
+      $res = $query->execute($vals);
+      $this->db->commit();
+
+      if($res === false) {
+        \Markaos\BakAPI\Log::critical("MySQL", $query->errorInfo()[2]);
+      }
+      return $res !== false;
     }
 
     public function remove($table, $conditions) {
