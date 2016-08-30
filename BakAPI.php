@@ -123,6 +123,14 @@ namespace Markaos\BakAPI {
     public function remove($table, $conditions);
   }
 
+  // Interface for frontends (methods for communicating with user)
+  // Expected implementations are web frontend and JSON fronted (primary)
+  interface IFrontend {
+
+    // Handle user request. User's destiny is in your hands
+    public function handleRequest();
+  }
+
   // Primary class of this library, should be the only one used from outside
   class BakAPI {
 
