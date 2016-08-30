@@ -33,6 +33,11 @@ namespace Markaos\BakAPI {
       );
     }
 
+    // This is ugly unsystematic hack for optimizing queries
+    public function getMySQLDatabase() {
+      return $this->db;
+    }
+
     public function createTable($tablename, $structure) {
       $sql = "CREATE TABLE IF NOT EXISTS $tablename (
         _ID INT (11) AUTO_INCREMENT PRIMARY KEY,
