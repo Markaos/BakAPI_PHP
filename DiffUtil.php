@@ -13,59 +13,77 @@ namespace Markaos\BakAPI {
       $removed = array();
       $added = array();
 
-      $section = BAKAPI_SECTION_GRADES;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_GRADES);
+      if(isset($oldA[BAKAPI_SECTION_GRADES])) {
+        $section = BAKAPI_SECTION_GRADES;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_GRADES);
+      }
 
-      $section = BAKAPI_SECTION_SUBJECTS;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_SUBJECTS);
+      if(isset($oldA[BAKAPI_SECTION_SUBJECTS])) {
+        $section = BAKAPI_SECTION_SUBJECTS;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_SUBJECTS);
+      }
 
-      $section = BAKAPI_SECTION_MESSAGES;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_MESSAGES);
+      if(isset($oldA[BAKAPI_SECTION_MESSAGES])) {
+        $section = BAKAPI_SECTION_MESSAGES;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_MESSAGES);
+      }
 
-      $section = BAKAPI_SECTION_EVENTS;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_EVENTS);
+      if(isset($oldA[BAKAPI_SECTION_EVENTS])) {
+        $section = BAKAPI_SECTION_EVENTS;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_EVENTS);
+      }
 
-      $section = BAKAPI_SECTION_HOMEWORK;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_HOMEWORK);
+      if(isset($oldA[BAKAPI_SECTION_HOMEWORK])) {
+        $section = BAKAPI_SECTION_HOMEWORK;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_HOMEWORK);
+      }
 
-      $section = BAKAPI_SECTION_TIMETABLE_STABLE;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_TIMETABLE_STABLE);
+      if(isset($oldA[BAKAPI_SECTION_TIMETABLE_STABLE])) {
+        $section = BAKAPI_SECTION_TIMETABLE_STABLE;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_TIMETABLE_STABLE);
+      }
 
-      $section = BAKAPI_SECTION_TIMETABLE_OVERLAY;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_TIMETABLE_OVERLAY);
+      if(isset($oldA[BAKAPI_SECTION_TIMETABLE_OVERLAY])) {
+        $section = BAKAPI_SECTION_TIMETABLE_OVERLAY;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_TIMETABLE_OVERLAY);
+      }
 
-      $section = BAKAPI_SECTION_TIMETABLE_CYCLES;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_TIMETABLE_CYCLES);
+      if(isset($oldA[BAKAPI_SECTION_TIMETABLE_CYCLES])) {
+        $section = BAKAPI_SECTION_TIMETABLE_CYCLES;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_TIMETABLE_CYCLES);
+      }
 
-      $section = BAKAPI_SECTION_TIMETABLE_CAPTIONS;
-      $a1 = $oldA[$section];
-      $a2 = $newA[$section];
-      DiffUtil::findDifferences($a1, $a2, $removed, $added,
-        BAKAPI_SECTION_TIMETABLE_CAPTIONS);
+      if(isset($oldA[BAKAPI_SECTION_TIMETABLE_CAPTIONS])) {
+        $section = BAKAPI_SECTION_TIMETABLE_CAPTIONS;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_TIMETABLE_CAPTIONS);
+      }
 
       $diffs = array();
 
