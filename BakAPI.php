@@ -7,6 +7,7 @@ namespace Markaos\BakAPI {
   require_once "LegacyClient.php";
   require_once "MySQLDatabase.php";
   require_once "WebFrontend.php";
+  require_once "JSONFrontend.php";
 
   define("BAKAPI_STATUS_OK", "01");
   define("BAKAPI_STATUS_ERROR", "02");
