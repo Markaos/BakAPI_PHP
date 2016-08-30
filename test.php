@@ -76,8 +76,8 @@ if($client != NULL) {
     flush();
     $arr = $client->load(BAKAPI_SECTION_SUBJECTS);
     foreach($arr[BAKAPI_SECTION_SUBJECTS] as $subject) {
-      echo "  <b>" . $subject["name"] . "</b> (" . $subject["teacher"] . " - " .
-        $subject["teacherEmail"] . ")\n";
+      echo "  <b>" . $subject["name"] . "</b> (" . $subject["teachers"] . " - " .
+        $subject["emails"] . ")\n";
     }
 
     echo "Fetching events...\n";
@@ -102,12 +102,12 @@ if($client != NULL) {
       if($tmp[1] > 0) {
         if($event["show"] == 1) {
           echo "  <b><i>" . date("d.m.Y", $event["date"]) . "</i>  " .
-            $event["name"] . "</b>: " . $event["desc"] . "\n";
+            $event["name"] . "</b>: " . $event["description"] . "\n";
           $tmp[2]++;
         }
       } else {
         echo "  <b><i>" . date("d.m.Y", $event["date"]) . "</i>  " .
-          $event["name"] . "</b>: " . $event["desc"] . "\n";
+          $event["name"] . "</b>: " . $event["description"] . "\n";
         $tmp[2]++;
       }
     }
