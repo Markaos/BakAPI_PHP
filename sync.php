@@ -3,6 +3,8 @@ require "bakapi.php";
 $settings = \Markaos\BakAPI\Util::getSettings();
 $db = \Markaos\BakAPI\Util::getDatabase();
 
+\Markaos\BakAPI\Log::i("Synchronization", "Checking for new data...");
+
 $sectionsFast = explode(',', $settings["sync_fast"]);
 $sectionsSlow = explode(',', $settings["sync_slow"]);
 $fastTime = time() - $settings["sync_interval_fast"];
@@ -40,4 +42,6 @@ foreach($users as $user) {
 
   $db->modify(BAKAPI_TABLE_USERS, $conditions, $columns, $values);
 }
+
+\Markaos\BakAPI\Log::i("Synchronization", "Check done");
 ?>
