@@ -457,7 +457,7 @@ namespace Markaos\BakAPI {
               if(!isset($l["cycle"]) || $l["cycle"] == "" ||
                   $l["cycle"] == $cycle) {
                 $arr[] = [
-                  "caption"     => (string) $captions[$i]["captions"],
+                  "caption"     => (string) $captions[$i]["caption"],
                   "day"         => (string) $dayShort,
                   "type"        => (string) $lesson->typ,
                   "short"       => "",
