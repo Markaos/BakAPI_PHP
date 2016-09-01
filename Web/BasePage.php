@@ -33,7 +33,7 @@ namespace Markaos\BakAPI\Web {
       $this->server  = "";
       $this->links   = [
         [
-          "href" => "http://fonts.googleapis.com/icon?family=Material+Icons",
+          "href" => "https://fonts.googleapis.com/icon?family=Material+Icons",
           "rel"  => "stylesheet"
         ],
         [

@@ -130,6 +130,7 @@ namespace Markaos\BakAPI\Web {
               ContentBuilder::makeBlock("td")
                 ->addContentNode(
                   ContentBuilder::makeText("b")
+                    ->addClass(isset($day[$id]["overlay"]) ? "red-text" : "")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
                     ->setContents($day[$id]["short"])
                     ->build()
