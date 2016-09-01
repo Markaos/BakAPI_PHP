@@ -213,6 +213,7 @@ namespace Markaos\BakAPI {
         ];
 
         $db->insert(BAKAPI_TABLE_USERS, $columns, $values);
+        self::syncData($uid);
       }
 
       return [
