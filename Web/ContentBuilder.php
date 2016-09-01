@@ -68,6 +68,16 @@ namespace Markaos\BakAPI\Web {
       return $this;
     }
 
+    public function addContentNodeReference(&$node) {
+      if($this->content["type"] != "container") {
+        throw new \Exception(
+          "addContentNode() can be called only on containers"
+        );
+      }
+      $this->content["contents"][] = &$node;
+      return $this;
+    }
+
     public function setContents($contents) {
       $this->content["contents"] = $contents;
       return $this;
