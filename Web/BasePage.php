@@ -29,8 +29,8 @@ namespace Markaos\BakAPI\Web {
       $this->title   = "BakAPI";
       $this->menu    = array();
       $this->pmenu   = array();
-      $this->user    = "16e063t6ei";
-      $this->server  = "bakalari.gfpvm.cz";
+      $this->user    = "";
+      $this->server  = "";
       $this->links   = [
         [
           "href" => "http://fonts.googleapis.com/icon?family=Material+Icons",
@@ -140,6 +140,12 @@ namespace Markaos\BakAPI\Web {
             ->build()
         )
         ->build();
+      if(isset($_SESSION["name"])) {
+        $this->user = $_SESSION["name"];
+      }
+      if(isset($_SESSION["server"])) {
+        $this->server = \parse_url($_SESSION["server"], PHP_URL_HOST);
+      }
     }
 
     protected function getContext() {
