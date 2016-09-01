@@ -27,6 +27,11 @@ namespace Markaos\BakAPI {
         return;
       }
 
+      if(isset($_GET["sync"])) {
+        \Markaos\BakAPI\BakAPI::syncData($_SESSION["UID"]);
+        $db = $this->getDatabase();
+      }
+
       if(!isset($_GET["action"])) {
         \Markaos\BakAPI\Web\MainPage::handleRequest($this, $db, $_SESSION["UID"]);
       } else if ($_GET["action"] == "timetable") {

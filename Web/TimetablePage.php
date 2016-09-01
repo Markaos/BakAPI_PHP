@@ -22,7 +22,7 @@ namespace Markaos\BakAPI\Web {
         ->build()
       );
       $this->addPermanentMenuEntry(ContentBuilder::makeBlock("a")
-        ->setAttribute("href", "#")
+        ->setAttribute("href", "?frontend=cz.markaos.bakapi.web&action=timetable&sync=true")
         ->addContentNode(
           ContentBuilder::makeText("i")
             ->addClass("material-icons")

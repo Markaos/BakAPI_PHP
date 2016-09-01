@@ -25,7 +25,7 @@ namespace Markaos\BakAPI\Web {
         )
         ->build());
       $this->addPermanentMenuEntry(ContentBuilder::makeBlock("a")
-        ->setAttribute("href", "#")
+        ->setAttribute("href", "?frontend=cz.markaos.bakapi.web&sync=true")
         ->addContentNode(
           ContentBuilder::makeText("i")
             ->addClass("material-icons")
@@ -38,7 +38,7 @@ namespace Markaos\BakAPI\Web {
       $this->addMenuEntrySimple("Akce", "&action=events");
       $this->addMenuEntrySimple("Úkoly", "&action=homework");
       $this->addMenuEntrySimple("Předměty", "&action=subjects");
-      $this->addMenuEntrySimple("Odhlásit", "&logout=1");
+      $this->addMenuEntrySimple("Odhlásit", "&logout=true");
       $this->finish();
     }
   }
