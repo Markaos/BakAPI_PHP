@@ -169,6 +169,8 @@ namespace Markaos\BakAPI\Web {
           );
           $this->finish();
         } else {
+          $_SESSION["name"] = $_POST["name"];
+          $_SESSION["server"] = $_POST["server"];
           $_SESSION["UID"] = $res["result"];
           $this->getContext()->handleRequest();
         }
