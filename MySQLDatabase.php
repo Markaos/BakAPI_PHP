@@ -164,7 +164,7 @@ namespace Markaos\BakAPI {
 
       if($res === false) {
         \Markaos\BakAPI\Log::critical("MySQL",
-          "Query failed! (\"$sql\", error: " . $this->db->errorInfo()[2] . ")");
+          "Query failed! (\"$sql\", error: " . $query->errorInfo()[2] . ")");
       }
       return $res !== false;
     }
@@ -271,7 +271,7 @@ namespace Markaos\BakAPI {
 
       if($res === false) {
         \Markaos\BakAPI\Log::critical("MySQL",
-          "Query failed! (\"$sql\", error: " . $this->db->errorInfo()[2] . ")");
+          "Query failed! (\"$sql\", error: " . $query->errorInfo()[2] . ")");
       }
       return $res !== false;
     }

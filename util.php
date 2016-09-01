@@ -233,7 +233,7 @@ namespace Markaos\BakAPI {
         "shortRoom"   => "string:8",
         "shortGroup"  => "string:8",
         "group"       => "string:16",
-        "theme"       => "string:64",
+        "theme"       => "string:256",
         "date"        => "int"
       ];
       $db->createTable($table, $structure);
