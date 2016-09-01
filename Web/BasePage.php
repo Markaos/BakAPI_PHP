@@ -173,12 +173,17 @@ namespace Markaos\BakAPI\Web {
         ->build();
     }
 
-    protected function addMenuEntrySimple($text, $link, $icon = false) {
-      $this->addMenuEntry(ContentBuilder::makeBlock("a")
-        ->setAttribute("href", "?frontend=cz.markaos.bakapi.web" . $link)
+    protected function addMenuEntrySimple($text, $link, $icon = false, $active = false) {
+      $this->addMenuEntry(ContentBuilder::makeBlock("li")
+        ->addClass($active ? "active" : "")
         ->addContentNode(
-          ContentBuilder::makeText()
-            ->setContents($text)
+          ContentBuilder::makeBlock("a")
+            ->setAttribute("href", "?frontend=cz.markaos.bakapi.web" . $link)
+            ->addContentNode(
+              ContentBuilder::makeText()
+                ->setContents($text)
+                ->build()
+            )
             ->build()
         )
         ->build());
