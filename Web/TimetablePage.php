@@ -130,7 +130,7 @@ namespace Markaos\BakAPI\Web {
 
       if(!isset($_POST["timetable"]) &&
           \strtotime("this " . $daysEnglish[$hid] . " " . $lastCaption["end"])
-            <= \time()) 
+            <= \time())
         {
         $actualCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1];
         $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2];
