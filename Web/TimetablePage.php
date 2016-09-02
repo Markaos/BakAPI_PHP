@@ -170,7 +170,11 @@ namespace Markaos\BakAPI\Web {
           $t[$row][$column] = $lesson;
         }
       } else {
-        $this->timetables[0]["active"] = true;
+        if(!isset($_POST["timetable"])) $this->timetables[0]["active"] = true;
+        else {
+          if($_POST["timetable"] == "o0") $this->timetables[0]["active"] = true;
+          else $this->timetables[1]["active"] = true;
+        }
       }
 
       $header = ContentBuilder::makeBlock("tr")
