@@ -63,10 +63,11 @@ namespace Markaos\BakAPI\Web {
       $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1];
 
       $this->timetables[0]["t"] = \date("j.n.Y", $actualCycle["mondayDate"]) . " - " .
-        \date("j.n.Y", $nextCycle["mondayDate"]);
+        \date("j.n.Y", \strtotime("yesterday", $nextCycle["mondayDate"]));
 
       $this->timetables[1]["t"] = \date("j.n.Y", $nextCycle["mondayDate"]) . " - " .
-        \date("j.n.Y", $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2]["mondayDate"]);
+        \date("j.n.Y", \strtotime("yesterday",
+          $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2]["mondayDate"]));
 
       $captions = $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS];
 
