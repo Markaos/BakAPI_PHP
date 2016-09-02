@@ -251,11 +251,11 @@ namespace Markaos\BakAPI\Web {
         foreach($node["attributes"] as $key => $value) {
           echo "$key=\"$value\" ";
         }
-        if(isset($node["contents"])) echo ">\n";
+        if(isset($node["contents"])) echo ">";
         else echo "/>\n";
         if(isset($node["contents"])) {
-          echo str_repeat("  ", $intendation + 1) . $node["contents"] . "\n";
-          echo str_repeat("  ", $intendation) . "</" . $node["element"] . ">\n";
+          echo $node["contents"];
+          echo "</" . $node["element"] . ">\n";
         }
       }
     }

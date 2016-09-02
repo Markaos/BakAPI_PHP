@@ -1,6 +1,7 @@
 <?php
 namespace Markaos\BakAPI\Web {
   require_once "InputContentBuilder.php";
+  require_once "SelectContentBuilder.php";
 
   class ContentBuilder {
     protected $content = array();
@@ -15,6 +16,10 @@ namespace Markaos\BakAPI\Web {
 
     public static function makeInput() {
       return new InputContentBuilder();
+    }
+
+    public static function makeSelect() {
+      return new SelectContentBuilder();
     }
 
     public static function makeLineBreak() {

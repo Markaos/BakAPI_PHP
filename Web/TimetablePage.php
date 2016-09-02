@@ -2,6 +2,7 @@
 namespace Markaos\BakAPI\Web {
 
   class TimetablePage extends BasePage {
+    private $timetables = array(array(), array());
 
     public function onRequest() {
       $userClient = \Markaos\BakAPI\BakAPI::getClient($this->getUID());
@@ -9,6 +10,15 @@ namespace Markaos\BakAPI\Web {
       $this->setTitle($userData["name"]);
       $header = array();
       $table = $this->createTimetable($userData);
+      $sel = ContentBuilder::makeSelect()
+        ->addClass("col")
+        ->addClass("s12 m6 offset-m6 l3 offset-l9")
+        ->setSelectAttribute("name", "timetable")
+        ->setSelectAttribute("onChange", "this.form.submit()");
+
+      foreach($this->timetables as $id => $timetable) {
+        $sel->addOption($timetable["t"], "o$id", isset($timetable["active"]));
+      }
 
       $this->addContentNode(ContentBuilder::makeBlock()
         ->addClass("row")
@@ -16,6 +26,13 @@ namespace Markaos\BakAPI\Web {
         ->addContentNode(
           ContentBuilder::makeBlock()
             ->addClass("container")
+            ->addContentNode(
+              ContentBuilder::makeForm()
+                ->setAttribute("action", "?frontend=cz.markaos.bakapi.web&action=timetable")
+                ->setAttribute("method", "POST")
+                ->addContentNode($sel->build())
+                ->build()
+            )
             ->addContentNodeReference($table)
             ->build()
         )
@@ -42,17 +59,34 @@ namespace Markaos\BakAPI\Web {
     private function createTimetable() {
       $data = $this->getData();
 
-      $timetable = WebUtil::mergeTimetable (
-        $data[BAKAPI_SECTION_TIMETABLE_STABLE],
-        $data[BAKAPI_SECTION_TIMETABLE_OVERLAY],
-        $data[BAKAPI_SECTION_TIMETABLE_CYCLES][0],
-        $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1]
-      );
+      $actualCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][0];
+      $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1];
+
+      $this->timetables[0]["t"] = \date("j.n.Y", $actualCycle["mondayDate"]) . " - " .
+        \date("j.n.Y", $nextCycle["mondayDate"]);
+
+      $this->timetables[1]["t"] = \date("j.n.Y", $nextCycle["mondayDate"]) . " - " .
+        \date("j.n.Y", $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2]["mondayDate"]);
 
       $captions = $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS];
 
+      if(isset($_POST["timetable"])) {
+        if($_POST["timetable"] == "o1") {
+          $actualCycle = $nextCycle;
+          $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2];
+        }
+      }
+
+      $timetable = WebUtil::mergeTimetable (
+        $data[BAKAPI_SECTION_TIMETABLE_STABLE],
+        $data[BAKAPI_SECTION_TIMETABLE_OVERLAY],
+        $actualCycle,
+        $nextCycle
+      );
+
       $t = array();
       $days = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"];
+      $daysEnglish = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
       foreach($timetable as $lesson) {
         $row = 0;
         foreach($days as $id => $day) {
@@ -75,6 +109,67 @@ namespace Markaos\BakAPI\Web {
         }
 
         $t[$row][$column] = $lesson;
+      }
+
+      $lastCaption = array();
+      $row = array();
+      $hid = 0;
+      foreach($t as $id => $day) {
+        if($id > $hid) {
+          $hid = $id;
+          $row = $day;
+        }
+      }
+
+      for($i = count($captions); $i > 0; $i--) {
+        if(isset($row[$i - 1])) {
+          $lastCaption = $captions[$i - 1];
+          break;
+        }
+      }
+
+      if(!isset($_POST["timetable"]) &&
+          \strtotime("this " . $daysEnglish[$hid] . " " . $lastCaption["end"])
+            <= \time()) 
+        {
+        $actualCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1];
+        $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2];
+
+        $this->timetables[1]["active"] = true;
+
+        $timetable = WebUtil::mergeTimetable (
+          $data[BAKAPI_SECTION_TIMETABLE_STABLE],
+          $data[BAKAPI_SECTION_TIMETABLE_OVERLAY],
+          $actualCycle,
+          $nextCycle
+        );
+
+        $t = array();
+        foreach($timetable as $lesson) {
+          $row = 0;
+          foreach($days as $id => $day) {
+            if($day == $lesson["day"]) {
+              $row = $id;
+              break;
+            }
+          }
+
+          $column = 0;
+          foreach($captions as $id => $caption) {
+            if($caption["caption"] == $lesson["caption"]) {
+              $column = $id;
+              break;
+            }
+          }
+
+          if(!isset($t[$row])) {
+            $t[$row] = array();
+          }
+
+          $t[$row][$column] = $lesson;
+        }
+      } else {
+        $this->timetables[0]["active"] = true;
       }
 
       $header = ContentBuilder::makeBlock("tr")
