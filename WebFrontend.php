@@ -10,6 +10,7 @@ namespace Markaos\BakAPI {
   require_once "Web/GradesPage.php";
   require_once "Web/HomeworkPage.php";
   require_once "Web/SubjectsPage.php";
+  require_once "Web/EventsPage.php";
 
   session_start();
 
@@ -45,6 +46,8 @@ namespace Markaos\BakAPI {
         \Markaos\BakAPI\Web\HomeworkPage::handleRequest($this, $db, $_SESSION["UID"]);
       } else if ($_GET["action"] == "subjects") {
         \Markaos\BakAPI\Web\SubjectsPage::handleRequest($this, $db, $_SESSION["UID"]);
+      } else if ($_GET["action"] == "events") {
+        \Markaos\BakAPI\Web\EventsPage::handleRequest($this, $db, $_SESSION["UID"]);
       }
     }
 
