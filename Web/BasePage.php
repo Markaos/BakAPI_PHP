@@ -110,6 +110,7 @@ namespace Markaos\BakAPI\Web {
                           ContentBuilder::makeText()
                             ->addClass("background")
                             ->setAttribute("style", "background-color: green;")
+                            ->setContents(" ")
                             ->build()
                         )
                         ->addContentNode(
