@@ -7,6 +7,8 @@ namespace Markaos\BakAPI {
   require_once "Web/Registration.php";
   require_once "Web/MainPage.php";
   require_once "Web/TimetablePage.php";
+  require_once "Web/GradesPage.php";
+  require_once "Web/HomeworkPage.php";
 
   session_start();
 
@@ -36,6 +38,10 @@ namespace Markaos\BakAPI {
         \Markaos\BakAPI\Web\MainPage::handleRequest($this, $db, $_SESSION["UID"]);
       } else if ($_GET["action"] == "timetable") {
         \Markaos\BakAPI\Web\TimetablePage::handleRequest($this, $db, $_SESSION["UID"]);
+      } else if ($_GET["action"] == "grades") {
+        \Markaos\BakAPI\Web\GradesPage::handleRequest($this, $db, $_SESSION["UID"]);
+      } else if ($_GET["action"] == "homework") {
+        \Markaos\BakAPI\Web\HomeworkPage::handleRequest($this, $db, $_SESSION["UID"]);
       }
     }
 
