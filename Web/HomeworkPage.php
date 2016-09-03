@@ -36,7 +36,7 @@ namespace Markaos\BakAPI\Web {
       $this->addMenuEntrySimple("Rozvrh", "&action=timetable");
       $this->addMenuEntrySimple("Známky", "&action=grades");
       $this->addMenuEntrySimple("Akce", "&action=events");
-      $this->addMenuEntrySimple("Úkoly", "&action=homework");
+      $this->addMenuEntrySimple("Úkoly", "&action=homework", false, true);
       $this->addMenuEntrySimple("Předměty", "&action=subjects");
       $this->addMenuEntrySimple("Odhlásit", "&logout=true");
       $this->finish();
