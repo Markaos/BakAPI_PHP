@@ -59,7 +59,6 @@ namespace Markaos\BakAPI\Web {
       $this->addContentNode(ContentBuilder::makeBlock()
         ->addClass("container")
         ->addClass("row")
-        ->setAttribute("style", "height: 90%")
         ->addContentNode(
           ContentBuilder::makeBlock()
             ->addContentNode($collection->build())
