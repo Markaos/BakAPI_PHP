@@ -59,6 +59,7 @@ namespace Markaos\BakAPI\Web {
       $this->addContentNode(ContentBuilder::makeBlock()
         ->addClass("container")
         ->addClass("row")
+        ->setAttribute("style", "margin-bottom: 0px;")
         ->addContentNode(
           ContentBuilder::makeBlock()
             ->addContentNode($collection->build())
