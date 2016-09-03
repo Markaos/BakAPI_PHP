@@ -24,6 +24,20 @@ namespace Markaos\BakAPI\Web {
         }
       }
 
+      foreach($data[BAKAPI_SECTION_TIMETABLE_STABLE] as $lesson) {
+        $weight = 1;
+        if(isset($lesson["cycle"]) && $lesson["cycle"] != "") {
+          $weight = 0.5;
+        }
+
+        if(!isset($subjects[$lesson["short"]])) continue;
+        if(!isset($subjects[$lesson["short"]]["count"])) {
+          $subjects[$lesson["short"]]["count"] = $weight;
+        } else {
+          $subjects[$lesson["short"]]["count"] += $weight;
+        }
+      }
+
       foreach($subjects as $subject) {
         $t = "";
         $first = true;
@@ -38,6 +52,15 @@ namespace Markaos\BakAPI\Web {
           }
         }
 
+        $c = " hodin";
+        if($subject["count"] < 1) {
+          $c = " hodiny";
+        } else if ($subject["count"] == 1) {
+          $c = " hodina";
+        } else if ($subject["count"] > 1 && $subject["count"] < 6) {
+          $c = " hodiny";
+        }
+
         $collection->addItem (
           ContentBuilder::makeBlock()
             ->addContentNode(
@@ -50,6 +73,12 @@ namespace Markaos\BakAPI\Web {
             ->addContentNode(
               ContentBuilder::makeText()
                 ->setContents($t)
+                ->build()
+            )
+            ->addContentNode(ContentBuilder::makeLineBreak()->build())
+            ->addContentNode(
+              ContentBuilder::makeText()
+                ->setContents("" . $subject["count"] . $c . " týdně")
                 ->build()
             )
             ->build()
