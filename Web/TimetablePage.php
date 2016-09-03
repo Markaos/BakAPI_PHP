@@ -239,10 +239,16 @@ namespace Markaos\BakAPI\Web {
                   ContentBuilder::makeLineBreak()->build()
                 )
                 ->addContentNode(
+                  ContentBuilder::makeLineBreak()->build()
+                )
+                ->addContentNode(
                   ContentBuilder::makeText("i")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
                     ->setContents($day[$id]["steacher"])
                     ->build()
+                )
+                ->addContentNode(
+                  ContentBuilder::makeLineBreak()->build()
                 )
                 ->addContentNode(
                   ContentBuilder::makeLineBreak()->build()
