@@ -9,7 +9,7 @@ namespace Markaos\BakAPI\Web {
       $userData = $userClient->getData();
       $this->setTitle($userData["name"]);
       $header = array();
-      $table = $this->createTimetable($userData);
+      $table = $this->createTimetable();
       $sel = ContentBuilder::makeSelect()
         ->addClass("col")
         ->addClass("s12 m6 offset-m6 l3 offset-l9")
