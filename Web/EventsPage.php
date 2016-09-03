@@ -12,18 +12,28 @@ namespace Markaos\BakAPI\Web {
 
       $e = ContentBuilder::makeCollection();
       foreach($events as $event) {
+        $evt = ContentBuilder::makeBlock()
+          ->addClass("col s12 l4");
+
         $ev = ContentBuilder::makeBlock()
+          ->addClass("row")
+          ->setAttribute("style", "margin-bottom: 0px")
           ->addContentNode(
-            ContentBuilder::makeText()
-              ->setAttribute("style", "font-weight: 500;")
-              ->setContents($event["name"])
-              ->build()
-          )
-          ->addContentNode(ContentBuilder::makeLineBreak()->build())
-          ->addContentNode(
-            ContentBuilder::makeText()
-              ->setAttribute("style", "line-height: 1rem;")
-              ->setContents(str_replace("/chr(13)", "<br>", $event["description"]))
+            ContentBuilder::makeBlock()
+              ->addClass("col s12 l8")
+              ->addContentNode(
+                ContentBuilder::makeText()
+                  ->setAttribute("style", "font-weight: 500;")
+                  ->setContents($event["name"])
+                  ->build()
+              )
+              ->addContentNode(ContentBuilder::makeLineBreak()->build())
+              ->addContentNode(
+                ContentBuilder::makeText()
+                  ->setAttribute("style", "line-height: 1rem;")
+                  ->setContents(str_replace("/chr(13)", "<br>", $event["description"]))
+                  ->build()
+              )
               ->build()
           );
 
@@ -32,8 +42,7 @@ namespace Markaos\BakAPI\Web {
           $date .= " " . $event["timerange"];
         }
 
-        $ev->addContentNode(ContentBuilder::makeLineBreak()->build());
-        $ev->addContentNode(
+        $evt->addContentNode(
           ContentBuilder::makeText()
             ->addClass("grey-text text-darken-2")
             ->setContents($date)
@@ -41,8 +50,8 @@ namespace Markaos\BakAPI\Web {
         );
 
         if($event["classes"] != "") {
-          $ev->addContentNode(ContentBuilder::makeLineBreak()->build());
-          $ev->addContentNode(
+          $evt->addContentNode(ContentBuilder::makeLineBreak()->build());
+          $evt->addContentNode(
             ContentBuilder::makeText()
               ->addClass("grey-text")
               ->setContents("Třídy: " . $event["classes"])
@@ -51,8 +60,8 @@ namespace Markaos\BakAPI\Web {
         }
 
         if($event["rooms"] != "") {
-          $ev->addContentNode(ContentBuilder::makeLineBreak()->build());
-          $ev->addContentNode(
+          $evt->addContentNode(ContentBuilder::makeLineBreak()->build());
+          $evt->addContentNode(
             ContentBuilder::makeText()
               ->addClass("grey-text")
               ->setContents("Místnosti: " . $event["rooms"])
@@ -61,14 +70,16 @@ namespace Markaos\BakAPI\Web {
         }
 
         if($event["teachers"] != "") {
-          $ev->addContentNode(ContentBuilder::makeLineBreak()->build());
-          $ev->addContentNode(
+          $evt->addContentNode(ContentBuilder::makeLineBreak()->build());
+          $evt->addContentNode(
             ContentBuilder::makeText()
               ->addClass("grey-text")
               ->setContents("Učitelé: " . $event["teachers"])
               ->build()
           );
         }
+
+        $ev->addContentNode($evt->build());
 
         $e->addItem($ev->build());
       }
