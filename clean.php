@@ -17,6 +17,7 @@ FROM   " . BAKAPI_TABLE_CHANGES . " NATURAL LEFT JOIN (
        ) t
 WHERE  _DATE < CURRENT_DATE - INTERVAL $threshold DAY
    AND t._DATE IS NULL;";
+  $db->exec($sql);
 } else {
   $columns = ["_DATE", "UID"];
   $conditions = [];
