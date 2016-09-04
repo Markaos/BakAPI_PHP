@@ -359,7 +359,7 @@ namespace Markaos\BakAPI {
       $captions = $this->loadTimetableCaptions();
 
       // This is really simple in PHP
-      $thisMonday = \date("Ymd", \strtotime("this week monday 00:00:00"));
+      $thisMonday = \date("Ymd", \strtotime("today 00:00:00"));
 
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
         "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$thisMonday");
