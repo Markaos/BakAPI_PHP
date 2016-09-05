@@ -12,29 +12,55 @@ namespace Markaos\BakAPI\Web {
 
       $data = $this->getData();
       $subjects = array();
-      foreach($data[BAKAPI_SECTION_SUBJECTS] as $subject) {
-        $short = $subject["short"];
-        if(!isset($subjects[$short])) {
-          $subjects[$short] = $subject;
-          $subjects[$short]["teachers"] = [$subject["teachers"]];
-          $subjects[$short]["emails"] = [$subject["emails"]];
-        } else {
-          $subjects[$short]["teachers"][] = $subject["teachers"];
-          $subjects[$short]["emails"][] = $subject["emails"];
+      $merge = $this->getPreferences()->getValue("subjects_merge", "true") == "true";
+      $cnt = $this->getPreferences()->getValue("subjects_count_lessons", "true") == "true";
+
+      if($merge) {
+        foreach($data[BAKAPI_SECTION_SUBJECTS] as $subject) {
+          $short = $subject["short"];
+          if(!isset($subjects[$short])) {
+            $subjects[$short] = $subject;
+            $subjects[$short]["teachers"] = [$subject["teachers"]];
+            $subjects[$short]["emails"] = [$subject["emails"]];
+          } else {
+            $subjects[$short]["teachers"][] = $subject["teachers"];
+            $subjects[$short]["emails"][] = $subject["emails"];
+          }
+        }
+      } else {
+        foreach($data[BAKAPI_SECTION_SUBJECTS] as $subject) {
+          $subject["teachers"] = [$subject["teachers"]];
+          $subject["emails"]   = [$subject["emails"]];
+          $subjects[] = $subject;
         }
       }
 
-      foreach($data[BAKAPI_SECTION_TIMETABLE_STABLE] as $lesson) {
-        $weight = 1;
-        if(isset($lesson["cycle"]) && $lesson["cycle"] != "") {
-          $weight = 0.5;
-        }
+      if($cnt) {
+        foreach($data[BAKAPI_SECTION_TIMETABLE_STABLE] as $lesson) {
+          $weight = 1;
+          if(isset($lesson["cycle"]) && $lesson["cycle"] != "") {
+            $weight = 0.5;
+          }
 
-        if(!isset($subjects[$lesson["short"]])) continue;
-        if(!isset($subjects[$lesson["short"]]["count"])) {
-          $subjects[$lesson["short"]]["count"] = $weight;
-        } else {
-          $subjects[$lesson["short"]]["count"] += $weight;
+          if($merge) {
+            if(!isset($subjects[$lesson["short"]])) continue;
+            if(!isset($subjects[$lesson["short"]]["count"])) {
+              $subjects[$lesson["short"]]["count"] = $weight;
+            } else {
+              $subjects[$lesson["short"]]["count"] += $weight;
+            }
+          } else {
+            foreach($subjects as $id => $subject) {
+              if($subject["short"] == $lesson["short"] &&
+                $subject["teachers"][0] == $lesson["teacher"]) {
+                if(!isset($subjects[$id]["count"])) {
+                  $subjects[$id]["count"] = $weight;
+                } else {
+                  $subjects[$id]["count"] += $weight;
+                }
+              }
+            }
+          }
         }
       }
 
@@ -52,13 +78,17 @@ namespace Markaos\BakAPI\Web {
           }
         }
 
-        $c = " hodin";
-        if($subject["count"] < 1) {
-          $c = " hodiny";
-        } else if ($subject["count"] == 1) {
-          $c = " hodina";
-        } else if ($subject["count"] > 1 && $subject["count"] < 6) {
-          $c = " hodiny";
+        $c = "";
+        if($cnt) {
+          $c = " hodin";
+          if($subject["count"] < 1) {
+            $c = " hodiny";
+          } else if ($subject["count"] == 1) {
+            $c = " hodina";
+          } else if ($subject["count"] > 1 && $subject["count"] < 6) {
+            $c = " hodiny";
+          }
+          $c = $subject["count"] . $c;
         }
 
         $collection->addItem (
@@ -78,7 +108,8 @@ namespace Markaos\BakAPI\Web {
             ->addContentNode(ContentBuilder::makeLineBreak()->build())
             ->addContentNode(
               ContentBuilder::makeText()
-                ->setContents("" . $subject["count"] . $c . " týdně")
+                ->setAttribute("style", $cnt ? "" : "display: none;")
+                ->setContents("" . $c . " týdně")
                 ->build()
             )
             ->build()
