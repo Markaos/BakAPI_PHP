@@ -42,6 +42,11 @@ namespace Markaos\BakAPI\Web {
         "timetable_show_dates" => [
           "true" => "Zobrazovat datum rozvrhu",
           "false" => "Zobrazovat \"Tento\"/\"Příští\" týden"
+        ],
+        "timetable_highlight_diffs" => [
+          "lesson_name" => "Zvýraznit jméno změněné hodiny",
+          "difference"  => "Zvýraznit změněné části hodiny",
+          "none"        => "Nezvýrazňovat změny"
         ]
       ];
       $s = ContentBuilder::makeBlock()

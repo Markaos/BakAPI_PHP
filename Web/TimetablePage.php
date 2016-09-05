@@ -215,6 +215,8 @@ namespace Markaos\BakAPI\Web {
         ->addClass("centered")
         ->addContentNode($header->build());
 
+      $h = $this->getPreferences()->getValue("timetable_highlight_diffs", "lesson_name");
+
       foreach($t as $dayId => $day) {
         $row = ContentBuilder::makeBlock("tr");
         $row->setAttribute("style", "line-height: 10px");
@@ -232,11 +234,30 @@ namespace Markaos\BakAPI\Web {
                 ->build()
             );
           } else {
+            $ovTitle = false;
+            $ovTeacher = false;
+            $ovRoom = false;
+
+            if(isset($day[$id]["overlay"])) {
+              $ovTitle = $day[$id]["overlay"]["title"];
+              $ovTeacher = $day[$id]["overlay"]["teacher"];
+              $ovRoom = $day[$id]["overlay"]["room"];
+
+              if($h == "lesson_name") {
+                $ovTeacher = false;
+                $ovRoom = false;
+              } else if ($h == "none") {
+                $ovTitle = false;
+                $ovTeacher = false;
+                $ovRoom = false;
+              }
+            }
+
             $row->addContentNode(
               ContentBuilder::makeBlock("td")
                 ->addContentNode(
                   ContentBuilder::makeText("b")
-                    ->addClass(isset($day[$id]["overlay"]) ? "red-text" : "")
+                    ->addClass($ovTitle ? "red-text" : "")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
                     ->setContents($day[$id]["short"])
                     ->build()
@@ -249,6 +270,7 @@ namespace Markaos\BakAPI\Web {
                 )
                 ->addContentNode(
                   ContentBuilder::makeText("i")
+                    ->addClass($ovTeacher ? "red-text" : "")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
                     ->setContents($day[$id]["steacher"])
                     ->build()
@@ -261,6 +283,7 @@ namespace Markaos\BakAPI\Web {
                 )
                 ->addContentNode(
                   ContentBuilder::makeText()
+                    ->addClass($ovRoom ? "red-text" : "")
                     ->setAttribute("style", "float: left; font-size: 12px; padding-left: 8px; padding-right: 4px;")
                     ->setContents($day[$id]["shortRoom"])
                     ->build()
