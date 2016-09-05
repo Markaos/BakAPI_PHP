@@ -4,6 +4,7 @@ namespace Markaos\BakAPI {
   require_once "Web/Util.php";
   require_once "Web/ContentBuilder.php";
   require_once "Web/BasePage.php";
+  require_once "Web/Preferences.php";
   require_once "Web/Registration.php";
   require_once "Web/MainPage.php";
   require_once "Web/TimetablePage.php";
@@ -19,7 +20,7 @@ namespace Markaos\BakAPI {
     public function handleRequest() {
       $db = $this->getDatabase();
       if($db === false) {
-        \Markaos\BakAPI\Web\Registrator::handleRequest($this, false, false);
+        \Markaos\BakAPI\Web\Registrator::handleRequest($this, false, false, false);
         return;
       }
 
@@ -36,18 +37,20 @@ namespace Markaos\BakAPI {
         $db = $this->getDatabase();
       }
 
+      $p = new Web\Preferences($_SESSION["UID"]);
+
       if(!isset($_GET["action"])) {
-        \Markaos\BakAPI\Web\MainPage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\MainPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       } else if ($_GET["action"] == "timetable") {
-        \Markaos\BakAPI\Web\TimetablePage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\TimetablePage::handleRequest($this, $db, $_SESSION["UID"], $p);
       } else if ($_GET["action"] == "grades") {
-        \Markaos\BakAPI\Web\GradesPage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\GradesPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       } else if ($_GET["action"] == "homework") {
-        \Markaos\BakAPI\Web\HomeworkPage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\HomeworkPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       } else if ($_GET["action"] == "subjects") {
-        \Markaos\BakAPI\Web\SubjectsPage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\SubjectsPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       } else if ($_GET["action"] == "events") {
-        \Markaos\BakAPI\Web\EventsPage::handleRequest($this, $db, $_SESSION["UID"]);
+        \Markaos\BakAPI\Web\EventsPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       }
     }
 

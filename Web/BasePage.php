@@ -5,6 +5,7 @@ namespace Markaos\BakAPI\Web {
     private $context = false;
     private $data    = false;
     private $uid     = false;
+    private $prefs   = false;
     private $title   = false;
     private $links   = false;
     private $meta    = false;
@@ -17,15 +18,16 @@ namespace Markaos\BakAPI\Web {
     private $user    = false;
     private $server  = false;
 
-    public static function handleRequest($context, $data, $uid) {
-      $instance = new static($context, $data, $uid);
+    public static function handleRequest($context, $data, $uid, $preferences) {
+      $instance = new static($context, $data, $uid, $preferences);
       $instance->onRequest();
     }
 
-    public function __construct($context, $data, $uid) {
+    public function __construct($context, $data, $uid, $preferences) {
       $this->context = $context;
       $this->data    = $data;
       $this->uid     = $uid;
+      $this->prefs   = $preferences;
       $this->title   = "BakAPI";
       $this->menu    = array();
       $this->pmenu   = array();
@@ -159,6 +161,10 @@ namespace Markaos\BakAPI\Web {
 
     protected function getUID() {
       return $this->uid;
+    }
+
+    protected function getPreferences() {
+      return $this->prefs;
     }
 
     protected function setTitle($title) {
