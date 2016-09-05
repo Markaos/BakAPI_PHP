@@ -509,8 +509,7 @@ namespace Markaos\BakAPI {
       $correction = 0;
       $arr = array();
       for($i = 0; $i < 4; $i++) {
-        $dateInt = \strtotime(($i + $correction == 0 ? "-" : "+") .
-          \abs($i + $correction - 1) . " week monday");
+        $dateInt = \strtotime("+" . \abs($i + $correction) * 7 . " day");
         $date = \date("Ymd", $dateInt);
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
           "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$date");
