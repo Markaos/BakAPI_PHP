@@ -12,7 +12,7 @@ namespace Markaos\BakAPI {
   require_once "Web/HomeworkPage.php";
   require_once "Web/SubjectsPage.php";
   require_once "Web/EventsPage.php";
-  require_once "Web/PreferencesPage.php"
+  require_once "Web/PreferencesPage.php";
 
   session_start();
 
