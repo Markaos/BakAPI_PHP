@@ -55,7 +55,6 @@ namespace Markaos\BakAPI\Web {
         $s = $db->prepare("INSERT INTO WebSettings (field_uid, field_key, field_value)
           VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE field_value = VALUES(field_value)");
         $s->execute([$uid, $name, $value]);
-        echo $s->errorInfo()[2];
       } else {
         $conds = [
           ["column" => "key", "condition" => "equals", "value" => $name],
