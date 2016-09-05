@@ -109,6 +109,7 @@ namespace Markaos\BakAPI\Web {
       $this->addMenuEntrySimple("Akce", "&action=events");
       $this->addMenuEntrySimple("Úkoly", "&action=homework");
       $this->addMenuEntrySimple("Předměty", "&action=subjects", false, true);
+      $this->addMenuEntrySimple("Nastavení", "&action=preferences&section=subjects");
       $this->addMenuEntrySimple("Odhlásit", "&logout=true");
       $this->finish();
     }

@@ -19,6 +19,10 @@ namespace Markaos\BakAPI\Web {
       return new InputContentBuilder();
     }
 
+    public function makeHidden() {
+      return new static("input", "end");
+    }
+
     public static function makeSelect() {
       return new SelectContentBuilder();
     }

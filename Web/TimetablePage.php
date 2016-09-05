@@ -52,6 +52,7 @@ namespace Markaos\BakAPI\Web {
       $this->addMenuEntrySimple("Akce", "&action=events");
       $this->addMenuEntrySimple("Úkoly", "&action=homework");
       $this->addMenuEntrySimple("Předměty", "&action=subjects");
+      $this->addMenuEntrySimple("Nastavení", "&action=preferences&section=timetable");
       $this->addMenuEntrySimple("Odhlásit", "&logout=1");
       $this->finish();
     }
@@ -62,12 +63,17 @@ namespace Markaos\BakAPI\Web {
       $actualCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][0];
       $nextCycle = $data[BAKAPI_SECTION_TIMETABLE_CYCLES][1];
 
-      $this->timetables[0]["t"] = \date("j.n.Y", $actualCycle["mondayDate"]) . " - " .
-        \date("j.n.Y", \strtotime("yesterday", $nextCycle["mondayDate"]));
+      if($this->getPreferences()->getValue("timetable_show_dates", "true") == "true") {
+        $this->timetables[0]["t"] = \date("j.n.Y", $actualCycle["mondayDate"]) . " - " .
+          \date("j.n.Y", \strtotime("yesterday", $nextCycle["mondayDate"]));
 
-      $this->timetables[1]["t"] = \date("j.n.Y", $nextCycle["mondayDate"]) . " - " .
-        \date("j.n.Y", \strtotime("yesterday",
-          $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2]["mondayDate"]));
+          $this->timetables[1]["t"] = \date("j.n.Y", $nextCycle["mondayDate"]) . " - " .
+          \date("j.n.Y", \strtotime("yesterday",
+            $data[BAKAPI_SECTION_TIMETABLE_CYCLES][2]["mondayDate"]));
+      } else {
+        $this->timetables[0]["t"] = "Tento týden";
+        $this->timetables[1]["t"] = "Příští týden";
+      }
 
       $captions = $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS];
 
