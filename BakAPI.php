@@ -21,6 +21,7 @@ namespace Markaos\BakAPI {
   define("BAKAPI_SECTION_TIMETABLE_OVERLAY", "timetable_overlay");
   define("BAKAPI_SECTION_TIMETABLE_CYCLES", "timetable_cycles");
   define("BAKAPI_SECTION_TIMETABLE_CAPTIONS", "timetable_captions");
+  define("BAKAPI_SECTION_TIMETABLE_THEMES", "timetable_themes");
 
   define("BAKAPI_TABLE_CHANGES", "changes");
   define("BAKAPI_TABLE_USERS", "users");
@@ -533,7 +534,6 @@ namespace Markaos\BakAPI {
         "shortRoom",
         "shortGroup",
         "group",
-        "theme",
         "date"
       ];
 

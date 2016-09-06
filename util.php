@@ -233,7 +233,6 @@ namespace Markaos\BakAPI {
         "shortRoom"   => "string:8",
         "shortGroup"  => "string:8",
         "group"       => "string:16",
-        "theme"       => "string:256",
         "date"        => "int"
       ];
       $db->createTable($table, $structure);
@@ -243,6 +242,15 @@ namespace Markaos\BakAPI {
         "UID"         => "string:128",
         "mondayDate"  => "int",
         "cycle"       => "string:8"
+      ];
+      $db->createTable($table, $structure);
+
+      $table = BAKAPI_SECTION_TIMETABLE_THEMES;
+      $structure = [
+        "UID"         => "string:128",
+        "date"        => "int",
+        "caption"     => "string:4",
+        "theme"       => "string:256"
       ];
       $db->createTable($table, $structure);
     }

@@ -9,6 +9,7 @@ namespace Markaos\BakAPI {
     private $data = null;
     private $timetableCache = null;
     private $subjectsCache = null;
+    private $themesCache = null;
 
     public function debug($action) {
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -397,7 +398,6 @@ namespace Markaos\BakAPI {
                   "shortRoom"   => "",
                   "shortGroup"  => "",
                   "group"       => "",
-                  "theme"       => "",
                   "date"        => \strtotime((string) $day->datum)
                 ];
               }
@@ -422,7 +422,6 @@ namespace Markaos\BakAPI {
             "shortRoom"   => (string) $lesson->zkrmist,
             "shortGroup"  => (string) $lesson->zkrskup,
             "group"       => (string) $lesson->skup,
-            "theme"       => (string) $lesson->tema,
             "date"        => \strtotime((string) $day->datum)
           ];
 
@@ -466,7 +465,6 @@ namespace Markaos\BakAPI {
                   "shortRoom"   => "",
                   "shortGroup"  => "",
                   "group"       => "",
-                  "theme"       => "",
                   "date"        => \strtotime((string) $day->datum)
                 ];
               }
@@ -491,7 +489,6 @@ namespace Markaos\BakAPI {
             "shortRoom"   => (string) $lesson->zkrmist,
             "shortGroup"  => (string) $lesson->zkrskup,
             "group"       => (string) $lesson->skup,
-            "theme"       => (string) $lesson->tema,
             "date"        => \strtotime((string) $day->datum)
           ];
 
