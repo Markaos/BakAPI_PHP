@@ -112,7 +112,9 @@ namespace Markaos\BakAPI {
       }
 
       $query = $this->db->prepare($sql);
-      $query->execute($values);
+      if($query->execute($values) === false) {
+        Log::critical("MySQL", "Query failed. SQL: \"$sql\", error: " . $query->errorInfo()[2]);
+      }
       $result = $query->fetchAll();
 
       $r = array();

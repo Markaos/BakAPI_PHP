@@ -386,7 +386,7 @@ namespace Markaos\BakAPI {
       }
 
       if($this->themesCache === null) {
-        $this->themesCache = array(array());
+        $this->themesCache = array();
       }
 
       $arr = array();
@@ -397,8 +397,8 @@ namespace Markaos\BakAPI {
         $nextMonday = \date("Ymd", \strtotime("next week monday 00:00:00",
           \strtotime((string) $day->datum)));
 
-        if(!isset($themesCache[$dayShort])) {
-          $themesCache[$dayShort] = array();
+        if(!isset($this->themesCache[$dayShort])) {
+          $this->themesCache[$dayShort] = array();
         }
 
         $i = 0;
@@ -447,8 +447,10 @@ namespace Markaos\BakAPI {
             "date"        => \strtotime((string) $day->datum)
           ];
 
-          $themesCache[$dayShort][$cpts[(string) $lesson->caption]] =
-            (string) $lesson->tema;
+          if((string) $lesson->caption != "") {
+            $this->themesCache[$dayShort][(string) $lesson->caption] =
+              (string) $lesson->tema;
+          }
 
           if(!\Markaos\BakAPI\Util::compareLessons($stable, $a, $cycle)) {
             $arr[] = $a;
@@ -577,7 +579,7 @@ namespace Markaos\BakAPI {
         foreach($captions as $caption => $theme) {
           $arr[] = [
             "date"    => \strtotime("this week " . $days[$shorts[$day]]),
-            "caption" => $caption,
+            "caption" => (string) $caption,
             "theme"   => $theme
           ];
         }

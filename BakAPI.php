@@ -372,6 +372,7 @@ namespace Markaos\BakAPI {
       $data[BAKAPI_SECTION_TIMETABLE_OVERLAY] = array();
       $data[BAKAPI_SECTION_TIMETABLE_CYCLES] = array();
       $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS] = array();
+      $data[BAKAPI_SECTION_TIMETABLE_THEMES] = array();
 
       $columns = ["_ID"];
       $conditions = [

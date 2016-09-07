@@ -85,6 +85,14 @@ namespace Markaos\BakAPI {
           BAKAPI_SECTION_TIMETABLE_CAPTIONS);
       }
 
+      if(isset($oldA[BAKAPI_SECTION_TIMETABLE_THEMES])) {
+        $section = BAKAPI_SECTION_TIMETABLE_THEMES;
+        $a1 = $oldA[$section];
+        $a2 = $newA[$section];
+        DiffUtil::findDifferences($a1, $a2, $removed, $added,
+          BAKAPI_SECTION_TIMETABLE_THEMES);
+      }
+
       $diffs = array();
 
       while(list(, $value) = each($removed)) {
