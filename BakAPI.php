@@ -401,6 +401,7 @@ namespace Markaos\BakAPI {
 
       $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
       foreach($tmp as $grade) {
+        $grade["weight"] = (int) $grade["weight"];
         $grade["date"] = (int) $grade["date"];
         $data[BAKAPI_SECTION_GRADES][] = $grade;
       }
