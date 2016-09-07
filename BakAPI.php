@@ -401,6 +401,7 @@ namespace Markaos\BakAPI {
 
       $tmp = $db->query("grades", $columns, $conditions, "_ID ASC");
       foreach($tmp as $grade) {
+        $grade["date"] = (int) $grade["date"];
         $data[BAKAPI_SECTION_GRADES][] = $grade;
       }
 
@@ -493,6 +494,8 @@ namespace Markaos\BakAPI {
       $tmp = $db->query(BAKAPI_SECTION_HOMEWORK,
         $columns, $conditions, "_ID ASC");
       foreach($tmp as $homework) {
+        $homework["issued"] = (int) $homework["issued"];
+        $homework["deadline"] = (int) $homework["deadline"];
         $data[BAKAPI_SECTION_HOMEWORK][] = $homework;
       }
 
