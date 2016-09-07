@@ -1,7 +1,7 @@
 <?php
 namespace Markaos\BakAPI\Web {
   class WebUtil {
-    public static function mergeTimetable($stable, $overlay, $cycle, $nextCycle) {
+    public static function mergeTimetable($stable, $overlay, $cycle, $nextCycle, $themes) {
       $merged = $stable;
       foreach($merged as $key => $lesson) {
         if(isset($lesson["cycle"]) && $lesson["cycle"] != "" &&
@@ -44,6 +44,41 @@ namespace Markaos\BakAPI\Web {
         }
 
         $merged[$id[0]] = $ovrl;
+      }
+
+      $days = [
+        "Po" => "Monday",
+        "Út" => "Tuesday",
+        "St" => "Wednesday",
+        "Čt" => "Thursday",
+        "Pá" => "Friday",
+        "So" => "Saturday",
+        "Ne" => "Sunday"
+      ];
+
+      $th = array();
+      if($themes !== false) {
+        foreach($themes as $theme) {
+          if(!isset($th[$theme["date"]])) {
+            $th[$theme["date"]] = array();
+          }
+
+          $th[$theme["date"]][$theme["caption"]] = $theme["theme"];
+        }
+      }
+
+      foreach($merged as &$lesson) {
+        if(!isset($lesson["date"])) {
+          $lesson["date"] = \strtotime("this week " . $days[$lesson["day"]]);
+        }
+
+        if($themes !== false) {
+          if(isset($th[$lesson["date"]][$lesson["caption"]])) {
+            $lesson["theme"] = $th[$lesson["date"]][$lesson["caption"]];
+          } else {
+            $lesson["theme"] = "";
+          }
+        }
       }
 
       return $merged;

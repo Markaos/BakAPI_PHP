@@ -88,7 +88,8 @@ namespace Markaos\BakAPI\Web {
         $data[BAKAPI_SECTION_TIMETABLE_STABLE],
         $data[BAKAPI_SECTION_TIMETABLE_OVERLAY],
         $actualCycle,
-        $nextCycle
+        $nextCycle,
+        $data[BAKAPI_SECTION_TIMETABLE_THEMES]
       );
 
       $t = array();
@@ -148,7 +149,8 @@ namespace Markaos\BakAPI\Web {
           $data[BAKAPI_SECTION_TIMETABLE_STABLE],
           $data[BAKAPI_SECTION_TIMETABLE_OVERLAY],
           $actualCycle,
-          $nextCycle
+          $nextCycle,
+          $data[BAKAPI_SECTION_TIMETABLE_THEMES]
         );
 
         $t = array();
@@ -264,6 +266,7 @@ namespace Markaos\BakAPI\Web {
                   ContentBuilder::makeText("b")
                     ->addClass($ovTitle ? "red-text" : "")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
+                    ->setAttribute("title", $day[$id]["theme"])
                     ->setContents($day[$id]["short"])
                     ->build()
                 )
