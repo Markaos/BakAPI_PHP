@@ -67,3 +67,7 @@ color: #4caf50 !important;
 .dropdown-content li>span {
   color: #4caf50;
 }
+
+.hidden {
+  display: none;
+}
