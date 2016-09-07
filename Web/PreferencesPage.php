@@ -48,6 +48,10 @@ namespace Markaos\BakAPI\Web {
           "lesson_name" => "Zvýraznit jméno změněné hodiny",
           "difference"  => "Zvýraznit změněné části hodiny",
           "none"        => "Nezvýrazňovat změny"
+        ],
+        "timetable_replace_empty_lessons_with_x" => [
+          "true" => "Zobrazit X na místě odstraněných hodin",
+          "false" => "Nezobrazovat odstraněné hodiny"
         ]
       ];
       $s = ContentBuilder::makeBlock()
