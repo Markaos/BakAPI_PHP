@@ -283,7 +283,8 @@ namespace Markaos\BakAPI {
             BAKAPI_SECTION_TIMETABLE_STABLE,
             BAKAPI_SECTION_TIMETABLE_OVERLAY,
             BAKAPI_SECTION_TIMETABLE_CYCLES,
-            BAKAPI_SECTION_TIMETABLE_CAPTIONS
+            BAKAPI_SECTION_TIMETABLE_CAPTIONS,
+            BAKAPI_SECTION_TIMETABLE_THEMES
           ])
         );
       } else {
@@ -592,6 +593,28 @@ namespace Markaos\BakAPI {
         $columns, $conditions, "_ID ASC");
       foreach($tmp as $caption) {
         $data[BAKAPI_SECTION_TIMETABLE_CAPTIONS][] = $caption;
+      }
+
+      // We almost forgot to load themes!
+      $columns = [
+        "date",
+        "caption",
+        "theme"
+      ];
+
+      $conditions = [
+        [
+          "column" => "UID",
+          "condition" => "equals",
+          "value" => $user
+        ]
+      ];
+
+      $tmp = $db->query(BAKAPI_SECTION_TIMETABLE_THEMES,
+        $columns, $conditions, "_ID ASC");
+      foreach($tmp as $theme) {
+        $theme["date"] = (int) $theme["date"];
+        $data[BAKAPI_SECTION_TIMETABLE_THEMES][] = $theme;
       }
 
       $data["hash"] = self::getFullDatabaseHash($data);

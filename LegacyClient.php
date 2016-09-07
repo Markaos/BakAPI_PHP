@@ -145,6 +145,9 @@ namespace Markaos\BakAPI {
           case BAKAPI_SECTION_TIMETABLE_CYCLES:
             $rArr[BAKAPI_SECTION_TIMETABLE_CYCLES] = $this->loadTimetableCycles();
             break;
+          case BAKAPI_SECTION_TIMETABLE_THEMES:
+            $rArr[BAKAPI_SECTION_TIMETABLE_THEMES] = $this->loadTimetableThemes();
+            break;
         }
       }
       return $rArr;
@@ -278,10 +281,16 @@ namespace Markaos\BakAPI {
 
       $arr = array();
       foreach ($xml->ukoly->children() as $homework) {
+        $iorig = (string) $homework->zadano;
+        $issued = substr($iorig, 4, 2) . "." . substr($iorig, 2, 2) . ".20" .
+          substr($iorig, 0, 2);
+        $iorig = (string) $homework->nakdy;
+        $deadline = substr($iorig, 4, 2) . "." . substr($iorig, 2, 2) . ".20" .
+          substr($iorig, 0, 2);
         $arr[] = [
           "subject"     => (string) $homework->predmet,
-          "issued"      => \strtotime((string) $homework->zadano),
-          "deadline"    => \strtotime((string) $homework->nakdy),
+          "issued"      => \strtotime($issued),
+          "deadline"    => \strtotime($deadline),
           "state"       => (string) $homework->status,
           "description" => (string) $homework->popis
         ];
@@ -358,6 +367,11 @@ namespace Markaos\BakAPI {
     private function loadTimetableOverlay() {
       $stable = $this->loadStableTimetable();
       $captions = $this->loadTimetableCaptions();
+      $cpts = array();
+      foreach($captions as $cpt) {
+        $cpts[] = $cpt["caption"];
+      }
+      $cpts = \array_flip($cpts);
 
       // This is really simple in PHP
       $thisMonday = \date("Ymd", \strtotime("today 00:00:00"));
@@ -371,6 +385,10 @@ namespace Markaos\BakAPI {
         return false;
       }
 
+      if($this->themesCache === null) {
+        $this->themesCache = array(array());
+      }
+
       $arr = array();
       $cycle = (string) $xml->rozvrh->zkratkacyklu;
       foreach($xml->rozvrh->dny->children() as $day) {
@@ -378,6 +396,10 @@ namespace Markaos\BakAPI {
         $dayShort = (string) $day->zkratka;
         $nextMonday = \date("Ymd", \strtotime("next week monday 00:00:00",
           \strtotime((string) $day->datum)));
+
+        if(!isset($themesCache[$dayShort])) {
+          $themesCache[$dayShort] = array();
+        }
 
         $i = 0;
         foreach ($day->hodiny->children() as $lesson) {
@@ -424,6 +446,9 @@ namespace Markaos\BakAPI {
             "group"       => (string) $lesson->skup,
             "date"        => \strtotime((string) $day->datum)
           ];
+
+          $themesCache[$dayShort][$cpts[(string) $lesson->caption]] =
+            (string) $lesson->tema;
 
           if(!\Markaos\BakAPI\Util::compareLessons($stable, $a, $cycle)) {
             $arr[] = $a;
@@ -528,6 +553,34 @@ namespace Markaos\BakAPI {
           "mondayDate" => $dateX,
           "cycle"      => (string) $xml->rozvrh->zkratkacyklu
         ];
+      }
+
+      return $arr;
+    }
+
+    private function loadTimetableThemes() {
+      if(!isset($this->themesCache)) {
+        $this->loadTimetableOverlay();
+        if(!isset($this->themesCache)) {
+          Log::w("LegacyClient",
+            "loadTimetableOverlay() failed to set themesCache");
+          return [];
+        }
+      }
+
+      $days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      $shorts = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"];
+      $shorts = \array_flip($shorts);
+
+      $arr = array();
+      foreach($this->themesCache as $day => $captions) {
+        foreach($captions as $caption => $theme) {
+          $arr[] = [
+            "date"    => \strtotime("this week " . $days[$shorts[$day]]),
+            "caption" => $caption,
+            "theme"   => $theme
+          ];
+        }
       }
 
       return $arr;
