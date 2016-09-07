@@ -171,9 +171,9 @@ namespace Markaos\BakAPI {
         // Get subject shortcut
         $sub = "";
         foreach($subjects as $k => $subj) {
-          if($subj["name"] == (string) $subject->jmeno) {
+          Log::i("LegacyClient", "Name:" . ((string) $subject->nazev));
+          if($subj["name"] == (string) $subject->nazev) {
             $sub = $subj["short"];
-            unset($subjects[$k]);
             break;
           }
         }
