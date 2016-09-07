@@ -237,6 +237,8 @@ namespace Markaos\BakAPI\Web {
       foreach($this->content as $node) {
         $this->printNode($node, 1);
       }
+
+      echo "</body>\n";
     }
 
     protected function printNode($node, $intendation) {
