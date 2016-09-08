@@ -69,7 +69,8 @@ namespace Markaos\BakAPI\Web {
 
       foreach($merged as &$lesson) {
         if(!isset($lesson["date"])) {
-          $lesson["date"] = \strtotime("this week " . $days[$lesson["day"]]);
+          $lesson["date"] = \strtotime("this week " . $days[$lesson["day"]],
+            $cycle["mondayDate"]);
         }
 
         if($themes !== false) {
