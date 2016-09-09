@@ -218,7 +218,7 @@ namespace Markaos\BakAPI\Web {
         ->addContentNode($header->build());
 
       $h = $this->getPreferences()->getValue("timetable_highlight_diffs", "lesson_name");
-      $x = $this->getPreferences()->getValue("timetable_replace_empty_lessons_with_x", "false") == true;
+      $x = $this->getPreferences()->getValue("timetable_replace_empty_lessons_with_x", "false") == "true";
 
       foreach($t as $dayId => $day) {
         $row = ContentBuilder::makeBlock("tr");
