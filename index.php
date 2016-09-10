@@ -1,5 +1,13 @@
 <?php
+$time_start = microtime(true);
+
 require "bakapi.php";
+
+register_shutdown_function(function () {
+  global $time_start;
+  $time_end = microtime(true);
+  echo "<!-- " . (($time_end - $time_start) * 1000) . "ms -->\n";
+});
 
 define("BAKAPI_LOADER_ERROR_FRONTEND", "1");
 define("BAKAPI_LOADER_ERROR_INTERNAL", "2");
