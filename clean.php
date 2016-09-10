@@ -1,13 +1,15 @@
 <?php
 require "bakapi.php";
 $db = \Markaos\BakAPI\Util::getDatabase();
-$threshold = \Markaos\BakAPI\Util::getSettings()["cleanup_threshold"];
+$settings = \Markaos\BakAPI\Util::getSettings();
+$threshold = $settings["cleanup_threshold"];
+$logtable = $settings["log_table"];
 
 \Markaos\BakAPI\Log::i("Cleanup", "Starting cleanup...");
 
 if(get_class($db) == "Markaos\BakAPI\MySQLDatabase") {
   \Markaos\BakAPI\Log::i("Cleanup", "Using optimized MySQL query");
-  $db = $db->getMySQLDatabase();
+  $mdb = $db->getMySQLDatabase();
 
   $sql = "DELETE " . BAKAPI_TABLE_CHANGES . "
 FROM   " . BAKAPI_TABLE_CHANGES . " NATURAL LEFT JOIN (
@@ -17,7 +19,9 @@ FROM   " . BAKAPI_TABLE_CHANGES . " NATURAL LEFT JOIN (
        ) t
 WHERE  _DATE < CURRENT_DATE - INTERVAL $threshold DAY
    AND t._DATE IS NULL;";
-  $db->exec($sql);
+  $mdb->exec($sql);
+
+  $sql = "DELETE FROM $logtable WHERE _DATE < DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
 } else {
   $columns = ["_DATE", "UID"];
   $conditions = [];
