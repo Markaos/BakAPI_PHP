@@ -17,6 +17,18 @@ namespace Markaos\BakAPI {
       return $store;
     }
 
+    public static function array_merge(array &$array1, array &$array2) {
+      $merged = $array1;
+      foreach ($array2 as $key => &$value) {
+        if(is_array($value) && isset($merged[$key]) && is_array($merged[$key])){
+          $merged[$key] = Util::array_merge($merged[$key], $value);
+        } else {
+          $merged [$key] = $value;
+        }
+      }
+      return $merged;
+    }
+
     public static function getSettings() {
       if(!\file_exists("config.ini")) {
         \file_put_contents("config.ini", "; Put your settings here");
@@ -25,7 +37,7 @@ namespace Markaos\BakAPI {
       $settings = \parse_ini_file("defaults.ini");
       $custom = \parse_ini_file("config.ini");
 
-      return \array_merge($settings, $custom);
+      return Util::array_merge($settings, $custom);
     }
 
     public static function getDatabase() {
