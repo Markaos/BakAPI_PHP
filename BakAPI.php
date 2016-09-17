@@ -446,6 +446,7 @@ namespace Markaos\BakAPI {
 
       $tmp = $db->query("messages", $columns, $conditions, "_ID ASC");
       foreach($tmp as $message) {
+        $message["date"] = (int) $message["date"];
         $data[BAKAPI_SECTION_MESSAGES][] = $message;
       }
 
