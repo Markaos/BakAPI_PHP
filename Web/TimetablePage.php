@@ -247,6 +247,7 @@ namespace Markaos\BakAPI\Web {
               $ovRoom = $day[$id]["overlay"]["room"];
 
               if($h == "lesson_name") {
+                $ovTitle = $ovTeacher || $ovRoom;
                 $ovTeacher = false;
                 $ovRoom = false;
               } else if ($h == "none") {
