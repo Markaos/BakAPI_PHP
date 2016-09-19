@@ -24,10 +24,10 @@ namespace Markaos\BakAPI\Web {
       );
     }
 
-    public function addItem($item) {
+    public function addItem($item, $header = false) {
       $this->addContentNode(
         ContentBuilder::makeBlock("li")
-          ->addClass("collection-item")
+          ->addClass($header ? "collection-header" : "collection-item")
           ->addContentNode($item)
           ->build()
       );

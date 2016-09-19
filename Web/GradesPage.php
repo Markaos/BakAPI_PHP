@@ -7,22 +7,58 @@ namespace Markaos\BakAPI\Web {
       $userClient = \Markaos\BakAPI\BakAPI::getClient($this->getUID());
       $userData = $userClient->getData();
       $this->setTitle($userData["name"]);
-      $this->addContentNode(ContentBuilder::makeBlock()
-        ->addClass("valign-wrapper")
-        ->addClass("row")
-        ->setAttribute("style", "height: 90%")
-        ->addContentNode(
-          ContentBuilder::makeBlock()
-            ->addClass("valign")
-            ->addClass("col s12 m10 offset-m1 l8 offset-l2")
+      $data = $this->getData();
+      $grades = $data[BAKAPI_SECTION_GRADES];
+      $subsorig = $data[BAKAPI_SECTION_SUBJECTS];
+      $subjects = array();
+
+      $g = ContentBuilder::makeCollection()->addClass("with-header");
+      foreach($grades as $grade) {
+        if(!isset($subjects[$grade["subject"]])) {
+          $subjects[$grade["subject"]] = array();
+        }
+        $subjects[$grade["subject"]][] = $grade;
+      }
+
+      foreach($subjects as $key => $subject) {
+        $s = "";
+        foreach($subsorig as $su) {
+          if($su["short"] == $key) $s = $su["name"];
+        }
+        $g->addItem(
+          ContentBuilder::makeText("h4")->setContents($s)->build(),
+          true
+        );
+        foreach($subject as $grade) {
+          $g->addItem(
+          ContentBuilder::makeBlock("div")
             ->addContentNode(
-              ContentBuilder::makeText("h1")
-                ->addClass("center-align")
-                ->setContents("Tato část ještě není hotová")
+              ContentBuilder::makeText("span")
+                ->setAttribute("style", "display: block;")
+                ->setContents($grade["title"])
+                ->build()
+            )
+            ->addContentNode(
+              ContentBuilder::makeText("span")
+                ->setAttribute("style", "display: block;")
+                ->setContents($grade["description"])
+                ->build()
+            )
+            ->addContentNode(
+              ContentBuilder::makeText("span")
+                ->setContents("<b>" . $grade["grade"] . "</b> (" . $grade["weight"] . ")")
                 ->build()
             )
             ->build()
-        )
+          );
+        }
+      }
+
+      $this->addContentNode(ContentBuilder::makeBlock()
+        ->addClass("container")
+        ->addClass("row")
+        ->setAttribute("style", "margin-bottom: 0px;")
+        ->addContentNode($g->build())
         ->build());
       $this->addPermanentMenuEntry(ContentBuilder::makeBlock("a")
         ->setAttribute("href", "?frontend=cz.markaos.bakapi.web&sync=true")
