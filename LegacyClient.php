@@ -532,8 +532,15 @@ namespace Markaos\BakAPI {
       $correction = 0;
       $arr = array();
       for($i = 0; $i < 4; $i++) {
-        $dateInt = \strtotime(($i + $correction == 0 ? "-" : "+") .
-          \abs($i + $correction - 1) . " week monday");
+        $dateStr = "";
+        if($i + $correction == 0) {
+          $dateStr = "this week Monday";
+        } else if ($i + $correction == 1) {
+          $dateStr = "next week Monday";
+        } else {
+          $dateStr = "+" . ($i + $correction - 1) . " week Monday";
+        }
+        $dateInt = \strtotime($dateStr);
         $date = \date("Ymd", $dateInt);
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
           "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$date");
