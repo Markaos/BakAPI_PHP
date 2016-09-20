@@ -30,12 +30,21 @@ namespace Markaos\BakAPI\Web {
           true
         );
         foreach($subject as $grade) {
+          $gtext = "";
+          if($grade["title"] == "") {
+            $gtext = "<b>" . $grade["description"] . "</b>";
+          } else {
+            $gtext = "<b>" . $grade["title"] . "</b>";
+            if($grade["description"] != "") {
+              $gtext .= " (" . $grade["description"] . ")";
+            }
+          }
           $g->addItem(
           ContentBuilder::makeBlock("div")
             ->addContentNode(
               ContentBuilder::makeText("span")
                 ->setAttribute("style", "display: block;")
-                ->setContents($grade["title"])
+                ->setContents($gtext)
                 ->build()
             )
             ->addContentNode(
@@ -46,7 +55,7 @@ namespace Markaos\BakAPI\Web {
             )
             ->addContentNode(
               ContentBuilder::makeText("span")
-                ->setContents("<b>" . $grade["grade"] . "</b> (" . $grade["weight"] . ")")
+                ->setContents("<b>" . $grade["grade"] . "</b> (váha " . $grade["weight"] . ")")
                 ->build()
             )
             ->build()
