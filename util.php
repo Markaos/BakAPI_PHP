@@ -191,7 +191,7 @@ namespace Markaos\BakAPI {
       $structure = [
         "UID"         => "string:128",
         "from"        => "string:64",
-        "contents"    => "string:2048",
+        "contents"    => "string:3072",
         "sysid"       => "string:64",
         "date"        => "int"
       ];
