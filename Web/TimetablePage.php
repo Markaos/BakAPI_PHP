@@ -222,6 +222,7 @@ namespace Markaos\BakAPI\Web {
 
       foreach($t as $dayId => $day) {
         $row = ContentBuilder::makeBlock("tr");
+        $row->addClass("data-row");
         $row->setAttribute("style", "line-height: 10px");
         $row->addContentNode(
           ContentBuilder::makeText("td")

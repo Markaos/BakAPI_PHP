@@ -71,3 +71,7 @@ color: #4caf50 !important;
 .hidden {
   display: none;
 }
+
+.data-row > td {
+  height: 80px;
+}
