@@ -10,6 +10,7 @@ namespace Markaos\BakAPI {
     private $timetableCache = null;
     private $subjectsCache = null;
     private $themesCache = null;
+    private $fullCache = null;
 
     public function debug($action) {
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -115,6 +116,18 @@ namespace Markaos\BakAPI {
 
     public function load($sections) {
       $sections = explode(',', $sections);
+
+      $store = \Markaos\BakAPI\Util::loadPage($this->server .
+        "/login.aspx?hx=" . $this->hash . "&pm=all");
+
+      \libxml_use_internal_errors(true);
+      $xml = \simplexml_load_string($store);
+      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+        return false;
+      }
+
+      $this->fullCache = $xml;
+
       $rArr = [];
       foreach($sections as $section) {
         switch($section) {
