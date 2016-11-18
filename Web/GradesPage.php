@@ -79,12 +79,6 @@ namespace Markaos\BakAPI\Web {
             )
             ->addContentNode(
               ContentBuilder::makeText("span")
-                ->setAttribute("style", "display: block;")
-                ->setContents($grade["description"])
-                ->build()
-            )
-            ->addContentNode(
-              ContentBuilder::makeText("span")
                 ->setContents("<b>" . $grade["grade"] . "</b> (váha " . $grade["weight"] . ")")
                 ->build()
             )
