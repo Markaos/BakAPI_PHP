@@ -75,3 +75,12 @@ color: #4caf50 !important;
 .data-row > td {
   height: 80px;
 }
+
+h4.title-wrapper {
+  display: inline-block;
+}
+
+.average-wrapper {
+  padding-top: 1.5em;
+  padding-right: 16px;
+}

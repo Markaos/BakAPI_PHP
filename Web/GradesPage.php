@@ -22,11 +22,41 @@ namespace Markaos\BakAPI\Web {
 
       foreach($subjects as $key => $subject) {
         $s = "";
+        $avg = "";
+        $avgw = 0;
         foreach($subsorig as $su) {
           if($su["short"] == $key) $s = $su["name"];
         }
+
+        foreach($subject as $grade) {
+          $grd = str_replace("-", ".5", $grade["grade"]);
+          if($avgw == 0) {
+            $avg = $grd;
+            $avgw = $grade["weight"];
+          } else {
+            $avg = ($avg * $avgw + $grd * $grade["weight"])/($avgw + $grade["weight"]);
+            $avgw += $grade["weight"];
+          }
+        }
+
+        $avg = str_replace(".", ",", number_format($avg, 2));
+
         $g->addItem(
-          ContentBuilder::makeText("h4")->setContents($s)->build(),
+          ContentBuilder::makeBlock()
+            ->addContentNode(
+                ContentBuilder::makeText("h4")
+                  ->addClass("title-wrapper")
+                  ->setContents($s)
+                  ->build()
+            )
+            ->addContentNode(
+              ContentBuilder::makeText("span")
+                ->addClass("right")
+                ->addClass("average-wrapper")
+                ->setContents("" . $avg)
+                ->build()
+            )
+            ->build(),
           true
         );
         foreach($subject as $grade) {
