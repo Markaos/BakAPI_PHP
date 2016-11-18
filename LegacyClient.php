@@ -122,7 +122,7 @@ namespace Markaos\BakAPI {
 
       \libxml_use_internal_errors(true);
       $xml = \simplexml_load_string($store);
-      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+      if($xml === false) {
         Log::e("LegacyClient", "Couldn't load action \"all\"");
         return false;
       }
