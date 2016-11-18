@@ -272,13 +272,18 @@ namespace Markaos\BakAPI {
     }
 
     private function loadEvents() {
-      $store = \Markaos\BakAPI\Util::loadPage($this->server .
-        "/login.aspx?hx=" . $this->hash . "&pm=akce");
+      $xml = null;
+      if($this->fullCache === null) {
+        $store = \Markaos\BakAPI\Util::loadPage($this->server .
+          "/login.aspx?hx=" . $this->hash . "&pm=akce");
 
-      \libxml_use_internal_errors(true);
-      $xml = \simplexml_load_string($store);
-      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
-        return false;
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+      } else {
+        $xml = $this->fullCache->xmlakce->results;
       }
 
       $arr = [];
