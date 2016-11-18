@@ -591,13 +591,23 @@ namespace Markaos\BakAPI {
         }
         $dateInt = \strtotime($dateStr);
         $date = \date("Ymd", $dateInt);
-        $store = \Markaos\BakAPI\Util::loadPage($this->server .
-          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$date");
+        $xml = null;
 
-        \libxml_use_internal_errors(true);
-        $xml = \simplexml_load_string($store);
-        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
-          return false;
+        if($this->fullCache === null || !($dateStr == "this week Monday" || $dateStr == "next week Monday") ) {
+          $store = \Markaos\BakAPI\Util::loadPage($this->server .
+            "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$date");
+
+          \libxml_use_internal_errors(true);
+          $xml = \simplexml_load_string($store);
+          if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+            return false;
+          }
+        } else {
+          if($dateStr == "this week Monday") { 
+            $xml = $this->fullCache->xmlrozvrhakt->results;
+          } else {
+            $xml = $this->fullCache->xmlrozvrhnext->results;
+          }
         }
 
         $dateX = \strtotime((string) $xml->rozvrh->dny->den->datum);
