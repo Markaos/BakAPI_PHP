@@ -24,6 +24,10 @@ namespace Markaos\BakAPI {
     public function load($sections) {
       return false;
     }
+
+    public function update() {
+      return false;
+    }
   }
 }
 ?>

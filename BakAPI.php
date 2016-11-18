@@ -46,8 +46,9 @@ namespace Markaos\BakAPI {
     // @password  Password
     // @return    Array with data needed to reconnect containing indexes "name"
     //            for real name (e.g. John Smith), "class" for class which the
-    //            user belongs to (1.A), "version" for server version and "uid"
-    //            for user ID (has to be unique for this client)   or false on
+    //            user belongs to  (1.A),  "version" for server version,  "uid"
+    //            for user ID (has to be unique for this client) and "updating"
+    //            for support of delta-updates (boolean, see Wiki) or false on
     //            failure
     public function connect($name, $password);
 
@@ -69,6 +70,11 @@ namespace Markaos\BakAPI {
     //            Wiki/Extending BakAPI or look at LegacyClient  code),  false
     //            on failure
     public function load($sections);
+
+    // Load changes from server (only called if data["updating"] is true)
+    //
+    // @return    Array containing changes or false on failure
+    public function update();
   }
 
   // Interface representing a storage (DB, file...)

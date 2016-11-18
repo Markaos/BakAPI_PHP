@@ -83,6 +83,7 @@ namespace Markaos\BakAPI {
         "version" => $version,
         "token"   => $passHash,
         "server"  => $this->server,
+        "updating"=> false,
         "uid"     => str_replace(['/', '\\', ':'], ['_', '_', '_'],
                        $uname . "@" . $this->server)
       ];
@@ -165,6 +166,11 @@ namespace Markaos\BakAPI {
         }
       }
       return $rArr;
+    }
+
+    public function update() {
+      // We don't support updates, so there's nothing to do here
+      return false;
     }
 
     private function loadGrades() {
