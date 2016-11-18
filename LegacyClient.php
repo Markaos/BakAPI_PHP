@@ -127,7 +127,7 @@ namespace Markaos\BakAPI {
         return false;
       }
 
-      $this->fullCache = $xml;
+      $this->fullCache = null;
 
       $rArr = [];
       foreach($sections as $section) {
