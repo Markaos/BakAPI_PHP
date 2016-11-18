@@ -127,7 +127,7 @@ namespace Markaos\BakAPI {
         return false;
       }
 
-      $this->fullCache = null;
+      $this->fullCache = $xml;
 
       $rArr = [];
       foreach($sections as $section) {
@@ -245,7 +245,7 @@ namespace Markaos\BakAPI {
 
     private function loadMessages() {
       $xml = null;
-      if($fullCache === null) {
+      if($this->fullCache === null) {
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
           "/login.aspx?hx=" . $this->hash . "&pm=prijate");
 
