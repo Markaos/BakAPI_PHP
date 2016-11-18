@@ -334,18 +334,23 @@ namespace Markaos\BakAPI {
 
     private function loadStableTimetable() {
       $xml = null;
-      if($this->timetableCache === null) {
-        $store = \Markaos\BakAPI\Util::loadPage($this->server .
-          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=perm");
+      if($this->fullCache === null) {
+        if($this->timetableCache === null) {
+          $store = \Markaos\BakAPI\Util::loadPage($this->server .
+            "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=perm");
 
-        \libxml_use_internal_errors(true);
-        $xml = \simplexml_load_string($store);
-        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
-          return false;
+          \libxml_use_internal_errors(true);
+          $xml = \simplexml_load_string($store);
+          if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+            return false;
+          }
+          $this->timetableCache = $xml;
+        } else {
+          $xml = $this->timetableCache;
         }
-        $this->timetableCache = $xml;
       } else {
-        $xml = $this->timetableCache;
+        $xml = $this->fullCache->xmlrozvrhperm->results;
+        $this->timetableCache = $xml;
       }
 
       $arr = array();
