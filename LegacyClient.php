@@ -414,13 +414,18 @@ namespace Markaos\BakAPI {
       // This is really simple in PHP
       $thisMonday = \date("Ymd", \strtotime("this week monday 00:00:00"));
 
-      $store = \Markaos\BakAPI\Util::loadPage($this->server .
-        "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$thisMonday");
+      $xml = null;
+      if($this->fullCache === null) {
+        $store = \Markaos\BakAPI\Util::loadPage($this->server .
+          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$thisMonday");
 
-      \libxml_use_internal_errors(true);
-      $xml = \simplexml_load_string($store);
-      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
-        return false;
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+      } else {
+        $xml = $this->fullCache->xmlrozvrhakt->results;
       }
 
       if($this->themesCache === null) {
@@ -497,13 +502,18 @@ namespace Markaos\BakAPI {
         }
       }
 
-      $store = \Markaos\BakAPI\Util::loadPage($this->server .
-        "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$nextMonday");
+      $xml = null;
+      if($this->fullCache === null) {
+        $store = \Markaos\BakAPI\Util::loadPage($this->server .
+          "/login.aspx?hx=" . $this->hash . "&pm=rozvrh&pmd=$nextMonday");
 
-      \libxml_use_internal_errors(true);
-      $xml = \simplexml_load_string($store);
-      if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
-        return false;
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->result == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+      } else {
+        $xml = $this->fullCache->xmlrozvrhnext->results;
       }
 
       $cycle = (string) $xml->rozvrh->zkratkacyklu;
