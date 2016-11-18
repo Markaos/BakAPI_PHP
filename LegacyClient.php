@@ -200,7 +200,7 @@ namespace Markaos\BakAPI {
           $arr[] = [
             "subject"     => (string) $sub,
             "title"       => (string) $grade->caption,
-            "description" => (string) $grade->notice,
+            "description" => (string) $grade->poznamka,
             "grade"       => (string) $grade->znamka,
             "weight"      => (int)    $grade->vaha,
             "date"        => (int)    \strtotime((string) $grade->udeleno)
