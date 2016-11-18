@@ -178,7 +178,7 @@ namespace Markaos\BakAPI {
           return false;
         }
       } else {
-        $xml = $this->fullCache->znamky;
+        $xml = $this->fullCache->xmlznamky;
       }
 
       // We need subjects table to determine shortened name for subject
@@ -226,7 +226,7 @@ namespace Markaos\BakAPI {
           return false;
         }
       } else {
-        $xml = $this->fullCache->predmety;
+        $xml = $this->fullCache->xmlpredmety;
       }
 
       $arr = [];
@@ -254,7 +254,7 @@ namespace Markaos\BakAPI {
           return false;
         }
       } else {
-        $xml = $this->fullCache->prijate;
+        $xml = $this->fullCache->xmlprijate;
       }
 
       $arr = array();
