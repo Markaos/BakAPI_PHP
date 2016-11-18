@@ -580,7 +580,7 @@ namespace Markaos\BakAPI {
     private function loadTimetableCycles() {
       $correction = 0;
       $arr = array();
-      for($i = 0; $i < 4; $i++) {
+      for($i = 0; $i < 3; $i++) {
         $dateStr = "";
         if($i + $correction == 0) {
           $dateStr = "this week Monday";
