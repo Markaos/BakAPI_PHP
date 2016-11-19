@@ -277,6 +277,7 @@ namespace Markaos\BakAPI {
         // This user isn't registered yet
         Log::ce("Synchronization",
           "Trying to synchronize data for non-existent user ($user)");
+        Log::removeContext($ctx1);
         return false;
       }
 
@@ -334,6 +335,7 @@ namespace Markaos\BakAPI {
 
       if($diffs === null || $diffs === false) {
         Log::w("BakAPI Core", "$diffs is null or false, should be array");
+        Log::removeContext($ctx1);
         return false;
       }
 
@@ -354,6 +356,8 @@ namespace Markaos\BakAPI {
             $diff["table"] . " (removal)");
         }
       }
+
+      Log::removeContext($ctx1);
 
       return true;
     }
