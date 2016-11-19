@@ -2,6 +2,7 @@
 namespace Markaos\BakAPI {
   require_once "bakapi.php";
 
+  // This client is used for mirroring data from master server
   class ProxyClient implements \Markaos\BakAPI\IClient {
     private $server = null;
 
