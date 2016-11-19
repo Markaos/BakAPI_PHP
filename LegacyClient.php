@@ -175,6 +175,19 @@ namespace Markaos\BakAPI {
       return false;
     }
 
+    public function login($server, $name, $password, $data) {
+      // Reconstruct UID
+      $ctx = Log::addContext("Offline login");
+      $uid = str_replace(['/', '\\', ':'], ['_', '_', '_'], $uname . "@" . $this->server);
+      $d = $data->getData($uid);
+      if($d == null) return false;
+      $token = base64_encode(hash("sha512", $salt . $internalCode . $type . $password, true));
+      $token = "*login*" . $name . "*pwd*" . $token . "*sgn*ANDR";
+      Log::removeContext($ctx);
+      if($d["token"] == $token) return true;
+      return false;
+    }
+
     private function loadGrades() {
       $xml = null;
       if($this->fullCache == null) {

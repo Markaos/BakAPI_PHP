@@ -29,6 +29,10 @@ namespace Markaos\BakAPI {
     public function update() {
       return false;
     }
+
+    public function login() {
+      return false;
+    }
   }
 }
 ?>

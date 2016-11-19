@@ -75,6 +75,14 @@ namespace Markaos\BakAPI {
     //
     // @return    Array containing changes or false on failure
     public function update();
+
+    // Check credentials without connecting to server
+    // @server    Server
+    // @name      Username
+    // @password  Password
+    // @data      Data provider, call $data->getData($uid) to get data for $uid
+    // @return    UID if credentials are valid, false otherwise
+    public function login($server, $name, $password, $data);
   }
 
   // Interface representing a storage (DB, file...)
@@ -169,8 +177,25 @@ namespace Markaos\BakAPI {
     //            successful, false otherwise) and "result" (string containing
     //            UID or error message)
     public static function register($server, $name, $password) {
+      $ctx = Log::addContext("Registration");
+      // Let's try to login without server assistance
+      $settings = \Markaos\BakAPI\Util::getSettings();
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      foreach ($settings["clients"] as $client) {
+        if(!class_exists($client)) continue;
+        $client = new $client();
+        $uid = $client->login($server, $name, $password, new DataProvider($db, $client));
+        if($uid !== false) {
+          return [
+            "status" => true,
+            "result" => str_replace('\\', '_', get_class($client)) . "-" . $uid,
+          ];
+        }
+      }
+
       $client = BakAPI::checkServer($server);
       if($client == NULL) {
+        Log::removeContext($ctx);
         return [
           "status" => false,
           "result" => BAKAPI_ERROR_SERVER_UNSUPPORTED
@@ -179,6 +204,7 @@ namespace Markaos\BakAPI {
 
       $data = $client->connect($name, $password);
       if($data === false) {
+        Log::removeContext($ctx);
         return [
           "status" => false,
           "result" => BAKAPI_ERROR_LOGIN_FAILED
@@ -221,7 +247,11 @@ namespace Markaos\BakAPI {
 
         $db->insert(BAKAPI_TABLE_USERS, $columns, $values);
         self::syncData($uid);
+      } else {
+        Log::e("BakAPI Core", "User exists, but client didn't authenticated him");
       }
+
+      Log::removeContext($ctx);
 
       return [
         "status" => true,
