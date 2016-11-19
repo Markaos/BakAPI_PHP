@@ -20,7 +20,7 @@ namespace Markaos\BakAPI {
     public function getData($uid) {
       $uid = $this->client . "-" . $uid;
       $conditions[0]["value"] = $uid;
-      $result = $this->db->query(BAKAPI_TABLE_USERS, $columns, $conditions, false);
+      $result = $this->db->query(BAKAPI_TABLE_USERS, $this->columns, $this->conditions, false);
       if(count($result) > 0) {
         if(count($result) > 1) {
           Log::e("DataProvider", "More than one user with UID \"$uid\"");
