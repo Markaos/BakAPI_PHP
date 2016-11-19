@@ -105,6 +105,7 @@ namespace Markaos\BakAPI\Web {
         $res = array();
         $password = hash("sha512", $_POST["password"]);
         if(count($r) == 1 && $r[0]["token"] == $password) {
+          var_dump($r);
           $res = ["status" => true, "result" => $r[0]["UID"]];
         } else {
           $res = \Markaos\BakAPI\BakAPI::register(
