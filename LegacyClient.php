@@ -178,7 +178,7 @@ namespace Markaos\BakAPI {
     public function login($server, $name, $password, $data) {
       // Reconstruct UID
       $ctx = Log::addContext("Offline login");
-      $uid = str_replace(['/', '\\', ':'], ['_', '_', '_'], $uname . "@" . $this->server);
+      $uid = str_replace(['/', '\\', ':'], ['_', '_', '_'], $name . "@" . $server);
       $d = $data->getData($uid);
       if($d == null) return false;
       $token = base64_encode(hash("sha512", $salt . $internalCode . $type . $password, true));

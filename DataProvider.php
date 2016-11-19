@@ -12,13 +12,13 @@ namespace Markaos\BakAPI {
         ]
       ];
     
-    public function __construct($client, $db) {
+    public function __construct($db, $client) {
       $this->db = $db;
       $this->client = str_replace('\\', '_', get_class($client));
     }
 
     public function getData($uid) {
-      $uid = $client . "-" . $uid;
+      $uid = $this->client . "-" . $uid;
       $conditions[0]["value"] = $uid;
       $result = $this->db->query(BAKAPI_TABLE_USERS, $columns, $conditions, false);
       if(count($result) > 0) {
