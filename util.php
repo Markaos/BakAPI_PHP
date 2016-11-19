@@ -176,12 +176,12 @@ namespace Markaos\BakAPI {
       $table = BAKAPI_SECTION_EVENTS;
       $structure = [
         "UID"         => "string:128",
-        "name"        => "string:64",
+        "name"        => "string:128",
         "description" => "string:512",
         "timerange"   => "string:16",
         "rooms"       => "string:128",
-        "teachers"    => "string:64",
-        "classes"     => "string:64",
+        "teachers"    => "string:128",
+        "classes"     => "string:128",
         "show"        => "int",
         "date"        => "int"
       ];
@@ -226,9 +226,9 @@ namespace Markaos\BakAPI {
         "short"       => "string:8",
         "steacher"    => "string:8",
         "teacher"     => "string:64",
-        "shortRoom"   => "string:8",
-        "shortGroup"  => "string:8",
-        "group"       => "string:16",
+        "shortRoom"   => "string:16",
+        "shortGroup"  => "string:16",
+        "group"       => "string:32",
         "cycle"       => "string:4"
       ];
       $db->createTable($table, $structure);
@@ -242,9 +242,9 @@ namespace Markaos\BakAPI {
         "short"       => "string:8",
         "steacher"    => "string:8",
         "teacher"     => "string:64",
-        "shortRoom"   => "string:8",
-        "shortGroup"  => "string:8",
-        "group"       => "string:16",
+        "shortRoom"   => "string:16",
+        "shortGroup"  => "string:16",
+        "group"       => "string:32",
         "date"        => "int"
       ];
       $db->createTable($table, $structure);
