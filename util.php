@@ -180,7 +180,7 @@ namespace Markaos\BakAPI {
         "description" => "string:512",
         "timerange"   => "string:16",
         "rooms"       => "string:128",
-        "teachers"    => "string:128",
+        "teachers"    => "string:256",
         "classes"     => "string:128",
         "show"        => "int",
         "date"        => "int"
