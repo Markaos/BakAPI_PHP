@@ -97,8 +97,8 @@ namespace Markaos\BakAPI {
         $from = self::$mailName . " <" . self::$mailFrom . ">";
         $to = self::$mailTo;
         $message = "Level: $level\r\nComponent: $component\r\nMessage: $message";
-        if(self::$context != null) {
-          $message .= "\r\nContext: " . self::$context;
+        if(self::$context != null && count(self::$context) != 0) {
+          $message .= "\r\nContext: " . self::getContext();
         }
         mail($to, self::$mailSubject, wordwrap($message, 70, "\r\n"),
           "From: $from");
