@@ -82,6 +82,7 @@ namespace Markaos\BakAPI\Web {
         $this->finish();
       } else {
         $db = \Markaos\BakAPI\Util::getDatabase();
+        $password = hash("sha512", $_POST["password"]);
         $db->createTable("WebCache", [
           "UID"       => "string:256",
           "server"    => "string:128",
@@ -99,13 +100,16 @@ namespace Markaos\BakAPI\Web {
             "column" => "server",
             "condition" => "equals",
             "value" => $_POST["server"]
+          ],
+          [
+            "column" => "token",
+            "condition" => "equals",
+            "value" => $password
           ]
         ];
         $r = $db->query("WebCache", $columns, $conditions, false);
         $res = array();
-        $password = hash("sha512", $_POST["password"]);
-        var_dump($r);
-        if(count($r) == 1 && $r[0]["token"] == $password) {
+        if(count($r) == 1) {
           $res = ["status" => true, "result" => $r[0]["UID"]];
         } else {
           $res = \Markaos\BakAPI\BakAPI::register(
