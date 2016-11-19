@@ -104,8 +104,8 @@ namespace Markaos\BakAPI\Web {
         $r = $db->query("WebCache", $columns, $conditions, false);
         $res = array();
         $password = hash("sha512", $_POST["password"]);
+        var_dump($r);
         if(count($r) == 1 && $r[0]["token"] == $password) {
-          var_dump($r);
           $res = ["status" => true, "result" => $r[0]["UID"]];
         } else {
           $res = \Markaos\BakAPI\BakAPI::register(
