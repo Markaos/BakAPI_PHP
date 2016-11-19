@@ -116,6 +116,7 @@ namespace Markaos\BakAPI {
     }
 
     public function load($sections) {
+      $ctx = Log::addContext("Loading data for " . $this->data["name"]);
       $sections = explode(',', $sections);
 
       $store = \Markaos\BakAPI\Util::loadPage($this->server .
@@ -165,6 +166,7 @@ namespace Markaos\BakAPI {
             break;
         }
       }
+      Log::removeContext($ctx);
       return $rArr;
     }
 

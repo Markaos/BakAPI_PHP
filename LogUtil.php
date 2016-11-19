@@ -16,6 +16,7 @@ namespace Markaos\BakAPI {
     private static $mailName = null;
     private static $mailTo = null;
     private static $mailSubject = null;
+    private static $context = null;
 
     private static function init() {
       if(self::$db === null) {
@@ -24,7 +25,8 @@ namespace Markaos\BakAPI {
         self::$db->createTable($settings["log_table"], array(
           "level"     => "string:2",
           "component" => "string:256",
-          "message"   => "string:1024"
+          "message"   => "string:1024",
+          "context"   => "string:2048"
         ));
         self::$table = $settings["log_table"];
         self::$saveLevel = $settings["log_save_level"];
@@ -58,17 +60,46 @@ namespace Markaos\BakAPI {
       self::log("CE", $component, $message);
     }
 
+    // Context allows you  to add useful informations  without requiring you to
+    // write it in every log() call. Useful when processing user data or things
+    // like that.
+    public static function addContext($context) {
+      $count = count(self::$context);
+      self::$context[$count] = $context;
+      return $count;
+    }
+
+    // Remove context level $id and all context levels added after it
+    public static function removeContext($id) {
+      for($i = count(self::$context); $i > $id; $i--) {
+        unset(self::$context[$i - 1]);
+      }
+    }
+
+    private static function getContext() {
+      $first = true;
+      $str = "";
+      foreach(self::$context as $context) {
+        if(!$first) $str .= " > ";
+        $str .= $context;
+      }
+      return $str;
+    }
+
     private static function log($level, $component, $message) {
       self::init();
       if(self::$levels[$level] >= self::$levels[self::$saveLevel]) {
-        self::$db->insert(self::$table, ["level", "component", "message"],
-          [[$level, $component, $message]]);
+        self::$db->insert(self::$table, ["level", "component", "message", "context"],
+          [[$level, $component, $message, self::getContext()]]);
       }
 
       if(self::$levels[$level] >= self::$levels[self::$mailLevel]) {
         $from = self::$mailName . " <" . self::$mailFrom . ">";
         $to = self::$mailTo;
         $message = "Level: $level\r\nComponent: $component\r\nMessage: $message";
+        if(self::$context != null) {
+          $message .= "\r\nContext: " . self::$context;
+        }
         mail($to, self::$mailSubject, wordwrap($message, 70, "\r\n"),
           "From: $from");
       }
