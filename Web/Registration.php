@@ -111,6 +111,8 @@ namespace Markaos\BakAPI\Web {
         $res = array();
         if(count($r) == 1) {
           $res = ["status" => true, "result" => $r[0]["UID"]];
+        } else if (count($r) > 1) {
+          \Markaos\BakAPI\Log::error("WebLogin", "Duplicate user - " . $_POST["username"] . "@" . $_POST["server"]);
         } else {
           $res = \Markaos\BakAPI\BakAPI::register(
             $_POST["server"], $_POST["name"], $_POST["password"]
