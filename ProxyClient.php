@@ -30,7 +30,7 @@ namespace Markaos\BakAPI {
       return false;
     }
 
-    public function login() {
+    public function login($server, $name, $password, $data) {
       return false;
     }
   }
