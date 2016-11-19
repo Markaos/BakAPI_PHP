@@ -285,7 +285,7 @@ namespace Markaos\BakAPI {
       $diffs = null;
 
       if($client->getData()["updating"] !== false) {
-        Log::ce("BakAPI Core", "Review of Core code needed - updating client found");
+        Log::critical("BakAPI Core", "Review of Core code needed - updating client found");
       }
 
       if($client->getData()["updating"] === false) {
