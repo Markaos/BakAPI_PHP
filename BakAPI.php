@@ -273,7 +273,7 @@ namespace Markaos\BakAPI {
       // Good beginning
       if($client === false) {
         // This user isn't registered yet
-        Log::w("Synchronization",
+        Log::ce("Synchronization",
           "Trying to synchronize data for non-existent user ($user)");
         return false;
       }
