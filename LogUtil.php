@@ -82,6 +82,7 @@ namespace Markaos\BakAPI {
       foreach(self::$context as $context) {
         if(!$first) $str .= " > ";
         $str .= $context;
+        $first = false;
       }
       return $str;
     }
