@@ -268,6 +268,8 @@ namespace Markaos\BakAPI {
       // these two while saving all changes  we made to allow users to  simply
       // patch their local database. Good luck
 
+      $ctx1 = Log::addContext("Synchronization");
+
       // Enough talking, let's make some code
       $client = BakAPI::getClient($user);
       // Good beginning
@@ -278,50 +280,62 @@ namespace Markaos\BakAPI {
         return false;
       }
 
-      $newData = array();
-      if($sections === "ALL") {
-        $newData = $client->load(implode(',', [
-            BAKAPI_SECTION_GRADES,
-            BAKAPI_SECTION_SUBJECTS,
-            BAKAPI_SECTION_MESSAGES,
-            BAKAPI_SECTION_EVENTS,
-            BAKAPI_SECTION_HOMEWORK,
-            BAKAPI_SECTION_TIMETABLE_STABLE,
-            BAKAPI_SECTION_TIMETABLE_OVERLAY,
-            BAKAPI_SECTION_TIMETABLE_CYCLES,
-            BAKAPI_SECTION_TIMETABLE_CAPTIONS,
-            BAKAPI_SECTION_TIMETABLE_THEMES
-          ])
-        );
-      } else {
-        $newData = $client->load(implode(',', $sections));
-      }
-      // New data ready - this didn't even hurt
+      Log::addContext($client->getData()["name"]);
+      $diffs = null;
 
-      $db = BakAPI::getFullDatabase($user);
-      $oldData = array();
-      if(is_array($sections)) {
-        foreach($sections as $section) {
-          $oldData[$section] = $db[$section];
+      if($client->getData()["updating"] === false) {
+        $newData = array();
+        if($sections === "ALL") {
+          $newData = $client->load(implode(',', [
+              BAKAPI_SECTION_GRADES,
+              BAKAPI_SECTION_SUBJECTS,
+              BAKAPI_SECTION_MESSAGES,
+              BAKAPI_SECTION_EVENTS,
+              BAKAPI_SECTION_HOMEWORK,
+              BAKAPI_SECTION_TIMETABLE_STABLE,
+              BAKAPI_SECTION_TIMETABLE_OVERLAY,
+              BAKAPI_SECTION_TIMETABLE_CYCLES,
+              BAKAPI_SECTION_TIMETABLE_CAPTIONS,
+              BAKAPI_SECTION_TIMETABLE_THEMES
+            ])
+          );
+        } else {
+          $newData = $client->load(implode(',', $sections));
         }
+        // New data ready - this didn't even hurt
+
+        $db = BakAPI::getFullDatabase($user);
+        $oldData = array();
+        if(is_array($sections)) {
+          foreach($sections as $section) {
+            $oldData[$section] = $db[$section];
+          }
+        } else {
+          $oldData = $db;
+        }
+
+        // Merging offloaded to DiffUtil
+        $diffs = \Markaos\BakAPI\DiffUtil::getDifferencesBakAPI($oldData, $newData);
+        $db = \Markaos\BakAPI\Util::getDatabase();
+        $columns = [
+          "UID",
+          "serialized"
+        ];
+
+        $values = [
+          [
+            $user,
+            ""
+          ]
+        ];
       } else {
-        $oldData = $db;
+        $diffs = $client->update();
       }
 
-      // Merging offloaded to DiffUtil
-      $diffs = \Markaos\BakAPI\DiffUtil::getDifferencesBakAPI($oldData, $newData);
-      $db = \Markaos\BakAPI\Util::getDatabase();
-      $columns = [
-        "UID",
-        "serialized"
-      ];
-
-      $values = [
-        [
-          $user,
-          ""
-        ]
-      ];
+      if($diffs === null || $diffs === false) {
+        Log::w("BakAPI Core", "$diffs is null or false, should be array");
+        return false;
+      }
 
       while(list(, $diff) = each($diffs)) {
         $values[0][1] = serialize($diff);
