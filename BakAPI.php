@@ -284,6 +284,10 @@ namespace Markaos\BakAPI {
       Log::addContext($client->getData()["name"]);
       $diffs = null;
 
+      if($client->getData()["updating"] !== false) {
+        Log::ce("BakAPI Core", "Review of Core code needed - updating client found");
+      }
+
       if($client->getData()["updating"] === false) {
         $newData = array();
         if($sections === "ALL") {
