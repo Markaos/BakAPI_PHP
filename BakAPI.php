@@ -1,6 +1,7 @@
 <?php
 namespace Markaos\BakAPI {
   require_once "util.php";
+  require_once "DataProvider.php";
   require_once "DiffUtil.php";
   require_once "LogUtil.php";
   require_once "ProxyClient.php";
