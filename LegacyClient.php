@@ -210,7 +210,7 @@ namespace Markaos\BakAPI {
       $token = base64_encode(hash("sha512", $d["sit"] . $password, true));
       $token = "*login*" . $name . "*pwd*" . $token . "*sgn*ANDR";
       Log::removeContext($ctx);
-      if($d["token"] == $token) return true;
+      if($d["token"] == $token) return $uid;
       return false;
     }
 
