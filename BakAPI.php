@@ -232,7 +232,7 @@ namespace Markaos\BakAPI {
         [["column" => "UID", "condition" => "equals", "value" => $uid]], false);
       if($res === false || count($res) == 0) {
         // And create a new record if the user doesn't exist
-        Log::i("Registration", "Creating new user with UID $uid");
+        Log::i("BakAPI Core", "Creating new user with UID $uid");
         $columns = [
           "UID",
           "client",
@@ -271,7 +271,7 @@ namespace Markaos\BakAPI {
     // @return  BakAPIClient connected to server using  user's  credentials or
     //          false on failure
     public static function getClient($user) {
-      $ctx = Log::addContext("Client lookup");
+      $ctx = Log::addContext("Client Lookup");
       Log::addContext($user);
       $db = \Markaos\BakAPI\Util::getDatabase();
       $columns = ["client", "data"];
@@ -284,7 +284,7 @@ namespace Markaos\BakAPI {
       ];
       $result = $db->query(BAKAPI_TABLE_USERS, $columns, $conditions, false);
       if(count($result) > 1) {
-        \Markaos\BakAPI\Log::e("BakAPI",
+        \Markaos\BakAPI\Log::e("BakAPI Core",
           "Database contains more than one user with UID \"$user\"");
       } else if (count($result) < 1) {
         return false;
@@ -308,14 +308,14 @@ namespace Markaos\BakAPI {
       // these two while saving all changes  we made to allow users to  simply
       // patch their local database. Good luck
 
-      $ctx1 = Log::addContext("Synchronization");
+      $ctx1 = Log::addContext("Core Sync");
 
       // Enough talking, let's make some code
       $client = BakAPI::getClient($user);
       // Good beginning
       if($client === false) {
         // This user isn't registered yet
-        Log::ce("Synchronization",
+        Log::ce("BakAPI Core",
           "Trying to synchronize data for non-existent user ($user)");
         Log::removeContext($ctx1);
         return false;
@@ -379,7 +379,7 @@ namespace Markaos\BakAPI {
       }
 
       if($diffs === null || $diffs === false) {
-        Log::w("BakAPI Core", "$diffs is null or false, should be array");
+        Log::w("BakAPI Core", "diffs is null or false, should be array");
         Log::removeContext($ctx1);
         return false;
       }
@@ -392,13 +392,9 @@ namespace Markaos\BakAPI {
         if($diff["type"] == "a") {
           \Markaos\BakAPI\Util::insertArrayIntoDatabase($db,
             $diff["table"], $diff["data"]);
-          \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
-            $diff["table"] . " (addition)");
         } else if ($diff["type"] == "r") {
           \Markaos\BakAPI\Util::removeArrayFromDatabase($db,
             $diff["table"], $diff["data"]);
-          \Markaos\BakAPI\Log::i("Synchronization", "Applying change to " .
-            $diff["table"] . " (removal)");
         }
       }
 
