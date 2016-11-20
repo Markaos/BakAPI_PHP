@@ -81,11 +81,14 @@ namespace Markaos\BakAPI {
     public static function send() {
       if(self::$queue != null) {
         $msg = "";
+        $first = true;
         foreach(self::$queue as $error) {
-          $msg .= "\r\n\r\nLevel: " . $error["level"] . "\r\n";
+          if(!$first) $msg .= "\r\n\r\n";
+          $msg .= "Level: " . $error["level"] . "\r\n";
           $msg .= "Component: " . $error["component"] . "\r\n";
           $msg .= "Message: " . $error["message"] . "\r\n";
           $msg .= "Context: " . $error["context"] . "\r\n";
+          $first = false;
         }
         $from = self::$mailName . " <" . self::$mailFrom . ">";
         $to = self::$mailTo;
