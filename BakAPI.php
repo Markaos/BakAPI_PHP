@@ -285,7 +285,8 @@ namespace Markaos\BakAPI {
         return false;
       }
       $client = new $result[0]["client"]();
-      $client->reconstruct(unserialize($result[0]["data"]));
+      $provider = new DataProvider($db, null, $user);
+      $client->reconstruct(unserialize($result[0]["data"]), $provider);
       return $client;
     }
 
