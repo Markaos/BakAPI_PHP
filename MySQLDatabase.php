@@ -172,6 +172,7 @@ namespace Markaos\BakAPI {
     }
 
     public function modify($table, $conditions, $columns, $values) {
+      $ctx = Log::addContext("MySQL::modify");
       $sql = "UPDATE $table SET ";
 
       $tmp = true;
@@ -227,6 +228,8 @@ namespace Markaos\BakAPI {
       if($res === false) {
         \Markaos\BakAPI\Log::critical("MySQL", $query->errorInfo()[2]);
       }
+
+      Log::removeContext($ctx);
       return $res !== false;
     }
 
