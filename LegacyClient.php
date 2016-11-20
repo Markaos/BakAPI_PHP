@@ -209,8 +209,7 @@ namespace Markaos\BakAPI {
       $uid = str_replace(['/', '\\', ':'], ['_', '_', '_'], $name . "@" . $server);
       $d = $data->getData($uid);
       if($d == null) return false;
-      // We will have to fix this, but let's leave it this way for now
-      $token = base64_encode(hash("sha512", $salt . $internalCode . $type . $password, true));
+      $token = base64_encode(hash("sha512", $d["sit"] . $password, true));
       $token = "*login*" . $name . "*pwd*" . $token . "*sgn*ANDR";
       Log::removeContext($ctx);
       if($d["token"] == $token) return true;
