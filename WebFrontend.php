@@ -19,9 +19,11 @@ namespace Markaos\BakAPI {
   class WebFrontend implements \Markaos\BakAPI\IFrontend {
 
     public function handleRequest() {
+      $ctx = Log::addContext("WebFrontend");
       $db = $this->getDatabase();
       if($db === false) {
         \Markaos\BakAPI\Web\Registrator::handleRequest($this, false, false, false);
+        Log::removeContext($ctx);
         return;
       }
 
@@ -29,6 +31,10 @@ namespace Markaos\BakAPI {
         unset($_SESSION["UID"]);
         unset($_SESSION["name"]);
         unset($_SESSION["server"]);
+
+        // Context must be removed before call to self, we'd get duplicate
+        // context otherwise
+        Log::removeContext($ctx);
         $this->handleRequest();
         return;
       }
@@ -55,6 +61,7 @@ namespace Markaos\BakAPI {
       } else if ($_GET["action"] == "preferences") {
         \Markaos\BakAPI\Web\PreferencesPage::handleRequest($this, $db, $_SESSION["UID"], $p);
       }
+      Log::removeContext($ctx);
     }
 
     private function getDatabase() {
