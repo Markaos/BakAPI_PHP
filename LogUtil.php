@@ -18,6 +18,7 @@ namespace Markaos\BakAPI {
     private static $mailSubject = null;
     private static $context = null;
     private static $queue = null;
+    private static $sent = false;
 
     private static function init() {
       register_shutdown_function("Markaos\BakAPI\Log::send");
@@ -79,6 +80,8 @@ namespace Markaos\BakAPI {
     }
 
     public static function send() {
+      if(self::$sent == true) return;
+      self::$sent = true;
       if(self::$queue != null) {
         $msg = "";
         $first = true;
