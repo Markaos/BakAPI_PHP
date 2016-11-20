@@ -186,7 +186,7 @@ namespace Markaos\BakAPI {
 
       $sql .= " WHERE ";
 
-      $vals = $values;
+      $vals = $values[0];
       $tmp = true;
       foreach ($conditions as $cond) {
         if(!$tmp) $sql .= " AND ";
