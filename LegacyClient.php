@@ -84,6 +84,8 @@ namespace Markaos\BakAPI {
         "token"   => $passHash,
         "server"  => $this->server,
         "updating"=> false,
+        "hx"      => $uname,
+        "sit"     => $salt . $internalCode . $type,
         "uid"     => str_replace(['/', '\\', ':'], ['_', '_', '_'],
                        $uname . "@" . $this->server)
       ];
@@ -91,13 +93,39 @@ namespace Markaos\BakAPI {
       return $this->getData();
     }
 
-    public function reconstruct($data, $verify = false) {
+    public function reconstruct($data, $provider, $verify = false) {
       $loginHash = base64_encode(hash("sha512", $data["token"] . date("Ymd"), true));
       $loginHash = str_replace(['\\', '/', '+'], ['_', '_', '-'], $loginHash);
 
       $this->server = $data["server"];
       $this->hash = $loginHash;
       $this->data = $data;
+
+      if(!isset($data["sit"])) {
+        if(!isset($data["hx"])) {
+          // We have to guess from our UID
+          $hx = str_replace(str_replace('\\', '_', get_class($client)) . "-", "", $data["uid"]);
+          $hx = substr($hx, 0, strpos($hx, "@"));
+          $data["hx"] = $hx;
+        }
+
+        if($data["hx"] != "16e063t6ei") return true;
+
+        $store = \Markaos\BakAPI\Util::loadPage($this->server . "/login.aspx?gethx=" . $data["hx"]);
+
+        \libxml_use_internal_errors(true);
+        $xml = \simplexml_load_string($store);
+        if($xml === false || !((string) $xml->res == BAKAPI_STATUS_OK)) {
+          return false;
+        }
+
+        $type = (string) $xml->typ;
+        $internalCode = (string) $xml->ikod;
+        $salt = (string) $xml->salt;
+        $data["sit"] = $salt . $internalCode . $type;
+
+        $provider->updateData($data);
+      }
 
       if($verify) {
         $store = \Markaos\BakAPI\Util::loadPage($this->server .

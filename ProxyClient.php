@@ -14,7 +14,7 @@ namespace Markaos\BakAPI {
       return false;
     }
 
-    public function reconstruct($data, $verify = false) {
+    public function reconstruct($data, $provider, $verify = false) {
       return false;
     }
 

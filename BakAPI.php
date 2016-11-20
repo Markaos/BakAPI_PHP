@@ -56,8 +56,10 @@ namespace Markaos\BakAPI {
     // Reconstruct connection using data saved in connect()
     //
     // @data    Data returned by the connect function
+    // @prov    DataProvider - use this to alter user data
+    // @verify  Check user credentials if this is true
     // @return  True if everything went good, false otherwise
-    public function reconstruct($data, $verify = false);
+    public function reconstruct($data, $provider, $verify = false);
 
     // Get data (same as connect)
     //

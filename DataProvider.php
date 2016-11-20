@@ -2,6 +2,7 @@
 namespace Markaos\BakAPI {
   
   class DataProvider {
+    private $uid;
     private $db;
     private $client;
     private $columns = ["data"];
@@ -12,7 +13,8 @@ namespace Markaos\BakAPI {
         ]
       ];
     
-    public function __construct($db, $client) {
+    public function __construct($db, $client, $uid = null) {
+      $this->uid = $uid;
       $this->db = $db;
       $this->client = str_replace('\\', '_', get_class($client));
     }
@@ -28,6 +30,12 @@ namespace Markaos\BakAPI {
         return unserialize($result[0]["data"]);
       }
       return null;
+    }
+
+    public function updateData($data) {
+      $this->conditions[0]["value"] = $this->uid;
+      $values = [[serialize($data)]];
+      $this->db->modify(BAKAPI_TABLE_USERS, $this->conditions, $this->columns, $values);
     }
   }
 }
