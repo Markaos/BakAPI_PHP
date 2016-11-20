@@ -159,14 +159,17 @@ namespace Markaos\BakAPI {
     // @server   String containing server URL
     // @return   BakAPI client able to connect to this server or null
     public static function checkServer($server) {
+      $ctx = Log::addContext("Checking server");
       $settings = \Markaos\BakAPI\Util::getSettings();
       foreach ($settings["clients"] as $client) {
         if(!class_exists($client)) continue;
         $client = new $client();
         if($client->checkAndStore($server)) {
+          Log::removeContext($ctx);
           return $client;
         }
       }
+      Log::removeContext($ctx);
       return NULL;
     }
 
@@ -268,6 +271,8 @@ namespace Markaos\BakAPI {
     // @return  BakAPIClient connected to server using  user's  credentials or
     //          false on failure
     public static function getClient($user) {
+      $ctx = Log::addContext("Client lookup");
+      Log::addContext($user);
       $db = \Markaos\BakAPI\Util::getDatabase();
       $columns = ["client", "data"];
       $conditions = [
@@ -287,6 +292,7 @@ namespace Markaos\BakAPI {
       $client = new $result[0]["client"]();
       $provider = new DataProvider($db, null, $user);
       $client->reconstruct(unserialize($result[0]["data"]), $provider);
+      Log::removeContext($ctx);
       return $client;
     }
 
