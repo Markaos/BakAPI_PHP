@@ -81,48 +81,10 @@ namespace Markaos\BakAPI\Web {
         );
         $this->finish();
       } else {
-        $db = \Markaos\BakAPI\Util::getDatabase();
-        $password = hash("sha512", $_POST["password"]);
-        $db->createTable("WebCache", [
-          "UID"       => "string:256",
-          "server"    => "string:128",
-          "username"  => "string:128",
-          "token"     => "string:129"
-        ]);
-        $columns = ["UID"];
-        $conditions = [
-          [
-            "column" => "username",
-            "condition" => "equals",
-            "value" => $_POST["name"]
-          ],
-          [
-            "column" => "server",
-            "condition" => "equals",
-            "value" => $_POST["server"]
-          ],
-          [
-            "column" => "token",
-            "condition" => "equals",
-            "value" => $password
-          ]
-        ];
-        $r = $db->query("WebCache", $columns, $conditions, false);
-        $res = array();
-        if(count($r) == 1) {
-          $res = ["status" => true, "result" => $r[0]["UID"]];
-        } else if (count($r) > 1) {
-          \Markaos\BakAPI\Log::error("WebLogin", "Duplicate user - " . $_POST["username"] . "@" . $_POST["server"]);
-        } else {
-          $res = \Markaos\BakAPI\BakAPI::register(
-            $_POST["server"], $_POST["name"], $_POST["password"]
-          );
-          if($res["status"] == true) {
-            $columns = ["UID", "server", "username", "token"];
-            $values = [[$res["result"], $_POST["server"], $_POST["name"], $password]];
-            $db->insert("WebCache", $columns, $values);
-          }
-        }
+        $res = \Markaos\BakAPI\BakAPI::register(
+          $_POST["server"], $_POST["name"], $_POST["password"]
+        );
+
         if($res["status"] === false) {
           $error = $res["result"] == BAKAPI_ERROR_SERVER_UNSUPPORTED ?
             "Nepodařilo se připojit k serveru" : "Špatné jméno nebo heslo";
