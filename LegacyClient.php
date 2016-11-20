@@ -109,8 +109,6 @@ namespace Markaos\BakAPI {
           $data["hx"] = $hx;
         }
 
-        if($data["hx"] != "16e063t6ei") return true;
-
         $store = \Markaos\BakAPI\Util::loadPage($this->server . "/login.aspx?gethx=" . $data["hx"]);
 
         \libxml_use_internal_errors(true);
