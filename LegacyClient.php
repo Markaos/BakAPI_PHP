@@ -104,7 +104,7 @@ namespace Markaos\BakAPI {
       if(!isset($data["sit"])) {
         if(!isset($data["hx"])) {
           // We have to guess from our UID
-          $hx = str_replace(str_replace('\\', '_', get_class($client)) . "-", "", $data["uid"]);
+          $hx = str_replace(str_replace('\\', '_', get_class($this)) . "-", "", $data["uid"]);
           $hx = substr($hx, 0, strpos($hx, "@"));
           $data["hx"] = $hx;
         }
