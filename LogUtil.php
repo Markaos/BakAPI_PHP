@@ -17,8 +17,10 @@ namespace Markaos\BakAPI {
     private static $mailTo = null;
     private static $mailSubject = null;
     private static $context = null;
+    private static $queue = null;
 
     private static function init() {
+      register_shutdown_function("Markaos\BakAPI\Log::send");
       if(self::$db === null) {
         $settings = \Markaos\BakAPI\Util::getSettings();
         self::$db = new $settings["database"]("log");
@@ -76,6 +78,22 @@ namespace Markaos\BakAPI {
       }
     }
 
+    public static function send() {
+      if(self::$queue != null) {
+        $msg = "";
+        foreach(self::$queue as $error) {
+          $msg .= "\r\n\r\nLevel: " . $error["level"] . "\r\n";
+          $msg .= "Component: " . $error["component"] . "\r\n";
+          $msg .= "Message: " . $error["message"] . "\r\n";
+          $msg .= "Context: " . $error["context"] . "\r\n";
+        }
+        $from = self::$mailName . " <" . self::$mailFrom . ">";
+        $to = self::$mailTo;
+        mail($to, self::$mailSubject, wordwrap($message, 70, "\r\n"),
+          "From: $from");
+      }
+    }
+
     private static function getContext() {
       $first = true;
       $str = "";
@@ -95,14 +113,15 @@ namespace Markaos\BakAPI {
       }
 
       if(self::$levels[$level] >= self::$levels[self::$mailLevel]) {
-        $from = self::$mailName . " <" . self::$mailFrom . ">";
-        $to = self::$mailTo;
-        $message = "Level: $level\r\nComponent: $component\r\nMessage: $message";
-        if(self::$context != null && count(self::$context) != 0) {
-          $message .= "\r\nContext: " . self::getContext();
+        if(self::$queue == null) {
+          self::$queue = array();
         }
-        mail($to, self::$mailSubject, wordwrap($message, 70, "\r\n"),
-          "From: $from");
+        self::$queue[] = [
+          "level"     => $level,
+          "component" => $component,
+          "message"   => $message,
+          "context"   => self::getContext()
+        ];
       }
     }
   }
