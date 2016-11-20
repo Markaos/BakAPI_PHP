@@ -101,30 +101,6 @@ namespace Markaos\BakAPI {
       $this->hash = $loginHash;
       $this->data = $data;
 
-      if(!isset($data["sit"])) {
-        if(!isset($data["hx"])) {
-          // We have to guess from our UID
-          $hx = str_replace(str_replace('\\', '_', get_class($this)) . "-", "", $data["uid"]);
-          $hx = substr($hx, 0, strpos($hx, "@"));
-          $data["hx"] = $hx;
-        }
-
-        $store = \Markaos\BakAPI\Util::loadPage($this->server . "/login.aspx?gethx=" . $data["hx"]);
-
-        \libxml_use_internal_errors(true);
-        $xml = \simplexml_load_string($store);
-        if($xml === false || !((string) $xml->res == BAKAPI_STATUS_OK)) {
-          return false;
-        }
-
-        $type = (string) $xml->typ;
-        $internalCode = (string) $xml->ikod;
-        $salt = (string) $xml->salt;
-        $data["sit"] = $salt . $internalCode . $type;
-
-        $provider->updateData($data);
-      }
-
       if($verify) {
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
           "/login.aspx?hx=$" . data["token"] . "&pm=login");
