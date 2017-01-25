@@ -493,9 +493,10 @@ namespace Markaos\BakAPI {
             $i++;
             continue;
           }
-          // TODO: check whether 'A' lessons contain captions
+
           $short = "";
           if((string) $lesson->typ == "A") {
+            $lesson->caption = (string) $captions[$i]["caption"];
             $short = (string) $lesson->zkratka;
           } else if ((string) $lesson->typ == "H") {
             $short = (string) $lesson->zkrpr;
@@ -570,9 +571,10 @@ namespace Markaos\BakAPI {
             $i++;
             continue;
           }
-          // TODO: check whether 'A' lessons contain captions
+
           $short = "";
           if((string) $lesson->typ == "A") {
+            $lesson->caption = (string) $captions[$i]["caption"];
             $short = (string) $lesson->zkratka;
           } else if ((string) $lesson->typ == "H") {
             $short = (string) $lesson->zkrpr;
