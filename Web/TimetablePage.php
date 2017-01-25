@@ -57,6 +57,10 @@ namespace Markaos\BakAPI\Web {
       $this->finish();
     }
 
+    private function shouldCenter($lesson) {
+      return $lesson["type"] == "X" || $lesson["type"] == "A";
+    }
+
     private function createTimetable() {
       $data = $this->getData();
 
@@ -274,30 +278,30 @@ namespace Markaos\BakAPI\Web {
                 )
                 ->addContentNode(
                   ContentBuilder::makeLineBreak()
-                    ->addClass($day[$id]["short"] == "X" ? "hidden" : "")
+                    ->addClass(self::shouldCenter($day[$id]) ? "hidden" : "")
                     ->build()
                 )
                 ->addContentNode(
                   ContentBuilder::makeLineBreak()
-                    ->addClass($day[$id]["short"] == "X" ? "hidden" : "")
+                    ->addClass(self::shouldCenter($day[$id]) ? "hidden" : "")
                     ->build()
                 )
                 ->addContentNode(
                   ContentBuilder::makeText("i")
                     ->addClass($ovTeacher ? "red-text" : "")
-                    ->addClass($day[$id]["short"] == "X" ? "hidden" : "")
+                    ->addClass(self::shouldCenter($day[$id]) ? "hidden" : "")
                     ->setAttribute("style", "text-align: center; display: inline-block;")
                     ->setContents($day[$id]["steacher"])
                     ->build()
                 )
                 ->addContentNode(
                   ContentBuilder::makeLineBreak()
-                    ->addClass($day[$id]["short"] == "X" ? "hidden" : "")
+                    ->addClass(self::shouldCenter($day[$id]) ? "hidden" : "")
                     ->build()
                 )
                 ->addContentNode(
                   ContentBuilder::makeLineBreak()
-                    ->addClass($day[$id]["short"] == "X" ? "hidden" : "")
+                    ->addClass(self::shouldCenter($day[$id]) ? "hidden" : "")
                     ->build()
                 )
                 ->addContentNode(
