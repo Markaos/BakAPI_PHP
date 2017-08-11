@@ -11,6 +11,7 @@ namespace Markaos\BakAPI {
         // Action and version attributes are required
         switch($_GET["a"]) {
           case "login": $this->handleLogin(); break;
+          case "getUserInfo": $this->handleUserInfo(); break;
         }
       } else {
         $this->error("bad_request");
@@ -41,12 +42,27 @@ namespace Markaos\BakAPI {
           $code = 201;
           $msg = "Bad login";
         }
-        echo '{"status":"error","code":' . $code . ',"message":"' . $msg . '"}';
+        $this->printResponse("error", $code, ["message" => $msg]);
         return;
       }
 
       // Login successful
-      echo '{"status":"success","code":0,"message":"Login succesful","token":"' . $res["result"] . '"}';
+      $this->printResponse("success", 0, ["token" => $res["result"]]);
+    }
+
+    private function handleUserInfo() {
+      if(!isset($_GET["token"])) {
+        $this->error("bad_request");
+        return;
+      }
+
+      $client = \Markaos\BakAPI\BakAPI::getClient($_GET["token"]);
+      $data = $client->getData();
+      printResponse("success", 0, [
+        "name"    => $data["name"],
+        "class"   => $data["class"],
+        "version" => $data["version"]
+      ]);
     }
 
     private function error($type) {
@@ -56,6 +72,14 @@ namespace Markaos\BakAPI {
           echo '{"status":"error","code":100,"message":"Malformed request"}';
           break;
       }
+    }
+
+    private function printResponse($status, $code, $array) {
+      echo '{"status":"' . $status . '","code":' . $code;
+      foreach($array as $key => $value) {
+        echo ',"' . $key . '":"' . $value . '"';
+      }
+      echo "}";
     }
   }
 }
