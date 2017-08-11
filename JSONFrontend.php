@@ -12,6 +12,7 @@ namespace Markaos\BakAPI {
         switch($_GET["a"]) {
           case "login": $this->handleLogin(); break;
           case "getUserInfo": $this->handleUserInfo(); break;
+          case "getUpdates": $this->handleUpdate(); break;
         }
       } else {
         $this->error("bad_request");
@@ -58,11 +59,37 @@ namespace Markaos\BakAPI {
 
       $client = \Markaos\BakAPI\BakAPI::getClient($_GET["token"]);
       $data = $client->getData();
-      printResponse("success", 0, [
+      $this->printResponse("success", 0, [
         "name"    => $data["name"],
         "class"   => $data["class"],
         "version" => $data["version"]
       ]);
+    }
+
+    private function handleUpdate() {
+      if(!isset($_GET["token"]) || !isset($_GET["trans"])) {
+        $this->error("bad_request");
+        return;
+      }
+
+      $transactions = \Markaos\BakAPI\BakAPI::getChanges($_GET["token"], $_GET["trans"]);
+      echo '{"status":"success","code":0,"t":[';
+      $f = true;
+      foreach($transactions as $t) {
+        if(!$f) echo ',';
+        $f = false;
+        $t = unserialize($t);
+        echo '{"type":"' . $t["type"] . '","sect":"' . $t["table"] . '",';
+        echo '"data":{';
+        $f2 = true;
+        foreach($t["data"] as $key => $value) {
+          if(!$f2) echo ',';
+          $f2 = false;
+          echo '"' . $key . '":"' . $value . '"';
+        }
+        echo '}}';
+      }
+      echo ']}';
     }
 
     private function error($type) {
