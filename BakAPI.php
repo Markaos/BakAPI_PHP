@@ -419,7 +419,7 @@ namespace Markaos\BakAPI {
         ["column" => "UID", "condition" => "equals", "value" => $user],
         ["column" => "_ID", "condition" => "g", "value" => $lastKnownChange]
       ];
-      return $db->query(BAKAPI_TABLE_CHANGES, $columns, $conditions);
+      return $db->query(BAKAPI_TABLE_CHANGES, $columns, $conditions, false);
     }
 
     // Get up-to-date database for this user. Called in case the server doesn't
