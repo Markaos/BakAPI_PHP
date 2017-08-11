@@ -147,7 +147,7 @@ namespace Markaos\BakAPI {
     // @sql         SQL query to be performed
     // @params      Parameters
     // @return      Result values
-    public function sql($sql, $params);
+    public function raw($sql, $params);
   }
 
   // Interface for frontends (methods for communicating with user)
