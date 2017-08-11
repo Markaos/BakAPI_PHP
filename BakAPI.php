@@ -141,6 +141,13 @@ namespace Markaos\BakAPI {
     // @conditions  Rows matching these conditions will be removed
     // @return      True on success, false otherwise
     public function remove($table, $conditions);
+
+    // Process raw query
+    //
+    // @sql         SQL query to be performed
+    // @params      Parameters
+    // @return      Result values
+    public function sql($sql, $params);
   }
 
   // Interface for frontends (methods for communicating with user)
