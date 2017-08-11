@@ -72,13 +72,15 @@ namespace Markaos\BakAPI {
         return;
       }
 
+      $db = \Markaos\BakAPI\Util::getDatabase();
+      $res = $db->raw("SELECT MAX(_ID) AS last from changes where field_UID=?", [$_GET["trans"]]);
       $transactions = \Markaos\BakAPI\BakAPI::getChanges($_GET["token"], $_GET["trans"]);
       echo '{"status":"success","code":0,"t":[';
       $f = true;
       foreach($transactions as $t) {
         if(!$f) echo ',';
         $f = false;
-        $t = unserialize($t);
+        $t = unserialize($t["serialized"]);
         echo '{"type":"' . $t["type"] . '","sect":"' . $t["table"] . '",';
         echo '"data":{';
         $f2 = true;
@@ -89,7 +91,7 @@ namespace Markaos\BakAPI {
         }
         echo '}}';
       }
-      echo ']}';
+      echo '],"last":"' . $res["last"] . '"}';
     }
 
     private function error($type) {
