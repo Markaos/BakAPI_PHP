@@ -103,7 +103,7 @@ namespace Markaos\BakAPI {
 
       if($verify) {
         $store = \Markaos\BakAPI\Util::loadPage($this->server .
-          "/login.aspx?hx=$" . data["token"] . "&pm=login");
+          "/login.aspx?hx=$" . $loginHash . "&pm=login");
 
         \libxml_use_internal_errors(true);
         $xml = \simplexml_load_string($store);
