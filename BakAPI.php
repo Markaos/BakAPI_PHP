@@ -188,7 +188,10 @@ namespace Markaos\BakAPI {
       $settings = \Markaos\BakAPI\Util::getSettings();
       $db = \Markaos\BakAPI\Util::getDatabase();
       foreach ($settings["clients"] as $client) {
-        if(!class_exists($client)) continue;
+        if(!class_exists($client)) {
+          Log::e("Configuration", "Nonexistent class '$client' specified in client list");
+          continue;
+        }
         $client = new $client();
         $uid = $client->login($server, $name, $password, new DataProvider($db, $client));
         if($uid !== false) {
