@@ -26,6 +26,7 @@ namespace Markaos\BakAPI {
           !isset($_GET["server"])
       ) {
         $this->error("bad_request");
+        return;
       }
 
       $res = \Markaos\BakAPI\BakAPI::register($_GET["server"], $_GET["name"], $_GET["pass"]);
@@ -41,6 +42,7 @@ namespace Markaos\BakAPI {
           $msg = "Bad login";
         }
         echo '{"status":"error","code":' . $code . ',"message":"' . $msg . '"}';
+        return;
       }
 
       // Login successful
