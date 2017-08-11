@@ -127,7 +127,11 @@ namespace Markaos\BakAPI {
       \libxml_use_internal_errors(true);
       $xml = \simplexml_load_string($store);
       if($xml === false) {
-        Log::e("LegacyClient", "Couldn't load action \"all\"");
+        // LegacyClient has proven to be working fine, but "legacy" servers
+        // often return malformed data (just plain HTML page) when they are
+        // given correct request data - this part shouldn't cause ~5 reports
+        // per user per day, log level has thus been lowered
+        Log::i("LegacyClient", "Couldn't load action \"all\"");
         return false;
       }
 
