@@ -24,6 +24,10 @@ namespace Markaos\BakAPI {
     }
 
     public function checkAndStore($server) {
+      $server = parse_url($server, PHP_URL_SCHEME) . "://" .
+                parse_url($server, PHP_URL_HOST) .
+                str_replace("index.aspx", "", parse_url($server, PHP_URL_PATH));
+      if(substr($server, -1) == "/") $server = substr($server, 0, -1);
       $store = \Markaos\BakAPI\Util::loadPage($server . "/login.aspx?gethx=null");
 
       \libxml_use_internal_errors(true);
@@ -184,6 +188,10 @@ namespace Markaos\BakAPI {
     public function login($server, $name, $password, $data) {
       // Reconstruct UID
       $ctx = Log::addContext("Offline login");
+      $server = parse_url($server, PHP_URL_SCHEME) . "://" .
+                parse_url($server, PHP_URL_HOST) .
+                str_replace("index.aspx", "", parse_url($server, PHP_URL_PATH));
+      if(substr($server, -1) == "/") $server = substr($server, 0, -1);
       $uid = str_replace(['/', '\\', ':'], ['_', '_', '_'], $name . "@" . $server);
       $d = $data->getData($uid);
       if($d == null) return false;
