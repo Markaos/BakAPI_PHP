@@ -280,6 +280,21 @@ namespace Markaos\BakAPI {
       }
       return $res !== false;
     }
+
+    public function raw($sql, $params) {
+      $this->db->beginTransaction();
+      $query = $this->db->prepare($sql);
+      $query->execute($params);
+      $this->db->commit();
+      $result = $query->fetchAll();
+
+      $r = array();
+      foreach ($result as $row) {
+        $r[] = $row;
+      }
+
+      return $r;
+    }
   }
 }
 ?>
