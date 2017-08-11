@@ -10,7 +10,7 @@ namespace Markaos\BakAPI {
       if(isset($_GET["a"]) && isset($_GET["v"])) {
         // Action and version attributes are required
         switch($_GET["a"]) {
-          case "login": handleLogin(); break;
+          case "login": $this->handleLogin(); break;
         }
       } else {
         $this->error("bad_request");
