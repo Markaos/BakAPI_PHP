@@ -111,25 +111,25 @@ namespace Markaos\BakAPI {
         return;
       }
 
-      $last = \Markaos\BakAPI\Util::getDatabase()->raw("SELECT MAX(_ID) AS last FROM changes WHERE field_UID=?", [$_GET["token"]]);
       $db = \Markaos\BakAPI\BakAPI::getFullDatabase($_GET["token"]);
-      $hash = \Markaos\BakAPI\BakAPI::getFullDatabaseHash($db);
 
       echo '{"status":"success","code":0,"d":{';
       foreach($db as $section => $data) {
+        if(!is_array($data)) continue;
         echo '"' . $section . '":[';
         foreach($data as $entry) {
           echo '{';
-          $first = true;
+          $f2 = true;
           foreach($entry as $key => $value) {
-            if(!$first) echo ',';
-            $first = false;
+            if(!$f2) echo ',';
+            $f2 = false;
             echo '"' . $key . '":"' . $value . '"';
           }
           echo '}';
         }
-        echo '],"last":"' . $last[0]["last"] . '","checksum":"' . $hash . '"}';
+        echo ']';
       }
+      echo '},"last":"' . $db["transaction"] . '","checksum":"' . $db["hash"] . '"}';
     }
 
     private function error($type) {
