@@ -117,7 +117,7 @@ namespace Markaos\BakAPI {
       $f = true;
       foreach($db as $section => $data) {
         if(!is_array($data)) continue;
-        if(!f) echo ',';
+        if(!$f) echo ',';
         $f = false;
         echo '"' . $section . '":[';
         foreach($data as $entry) {
