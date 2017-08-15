@@ -114,8 +114,11 @@ namespace Markaos\BakAPI {
       $db = \Markaos\BakAPI\BakAPI::getFullDatabase($_GET["token"]);
 
       echo '{"status":"success","code":0,"d":{';
+      $f = true;
       foreach($db as $section => $data) {
         if(!is_array($data)) continue;
+        if(!f) echo ',';
+        $f = false;
         echo '"' . $section . '":[';
         foreach($data as $entry) {
           echo '{';
