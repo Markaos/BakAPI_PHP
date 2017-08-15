@@ -13,6 +13,7 @@ namespace Markaos\BakAPI {
           case "login": $this->handleLogin(); break;
           case "getUserInfo": $this->handleUserInfo(); break;
           case "getUpdates": $this->handleUpdate(); break;
+          case "getDatabase": $this->handleDatabase(); break;
         }
       } else {
         $this->error("bad_request");
@@ -82,7 +83,7 @@ namespace Markaos\BakAPI {
         echo '{"status":"error","code":210,"message":"Unknown transaction, download full database"}';
         return;
       }
-      
+
       $res = $db->raw("SELECT MAX(_ID) AS last FROM changes WHERE field_UID=?", [$_GET["token"]]);
       $transactions = \Markaos\BakAPI\BakAPI::getChanges($_GET["token"], $_GET["trans"]);
       echo '{"status":"success","code":0,"t":[';
@@ -102,6 +103,33 @@ namespace Markaos\BakAPI {
         echo '}}';
       }
       echo '],"last":"' . $res[0]["last"] . '","checksum":"' . $hash . '"}';
+    }
+
+    private function handleDatabase() {
+      if(!isset($_GET["token"])) {
+        $this->error("bad_request");
+        return;
+      }
+
+      $last = \Markaos\BakAPI\Util::getDatabase()->raw("SELECT MAX(_ID) AS last FROM changes WHERE field_UID=?", [$_GET["token"]]);
+      $db = \Markaos\BakAPI\BakAPI::getFullDatabase($_GET["token"]);
+      $hash = \Markaos\BakAPI\BakAPI::getFullDatabaseHash($db);
+
+      echo '{"status":"success","code":0,"d":{';
+      foreach($db as $section => $data) {
+        echo '"' . $section . '":[';
+        foreach($data as $entry) {
+          echo '{';
+          $first = true;
+          foreach($entry as $key => $value) {
+            if(!$first) echo ',';
+            $first = false;
+            echo '"' . $key . '":"' . $value . '"';
+          }
+          echo '}';
+        }
+        echo '],"last":"' . $last[0]["last"] . '","checksum":"' . $hash . '"}';
+      }
     }
 
     private function error($type) {
