@@ -120,12 +120,15 @@ namespace Markaos\BakAPI {
         if(!$f) echo ',';
         $f = false;
         echo '"' . $section . '":[';
+        $f2 = true;
         foreach($data as $entry) {
+          if(!$f2) echo ',';
+          $f2 = false;
           echo '{';
-          $f2 = true;
+          $f3 = true;
           foreach($entry as $key => $value) {
-            if(!$f2) echo ',';
-            $f2 = false;
+            if(!$f3) echo ',';
+            $f3 = false;
             echo '"' . $key . '":"' . $value . '"';
           }
           echo '}';
