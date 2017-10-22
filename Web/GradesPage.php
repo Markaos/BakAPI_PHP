@@ -29,7 +29,7 @@ namespace Markaos\BakAPI\Web {
         }
 
         foreach($subject as $grade) {
-          $grd = str_replace("-", ".5", $grade["grade"]);
+          $grd = str_replace(["-","!"], [".5", ""], $grade["grade"]);
           if(!is_numeric($grd)) continue;
           if($avgw == 0) {
             $avg = $grd;
@@ -40,7 +40,7 @@ namespace Markaos\BakAPI\Web {
           }
         }
 
-        $avg = str_replace(".", ",", number_format($avg, 2));
+        $avg = $avg == "" ? "N" : str_replace(".", ",", number_format($avg, 2));
 
         $g->addItem(
           ContentBuilder::makeBlock()
