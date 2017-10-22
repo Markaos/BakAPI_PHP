@@ -30,6 +30,7 @@ namespace Markaos\BakAPI\Web {
 
         foreach($subject as $grade) {
           $grd = str_replace("-", ".5", $grade["grade"]);
+          if(!is_numeric($grd)) continue;
           if($avgw == 0) {
             $avg = $grd;
             $avgw = $grade["weight"];
