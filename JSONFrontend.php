@@ -133,7 +133,7 @@ namespace Markaos\BakAPI {
         }
       }
 
-      echo json_encode($out);
+      echo json_encode($out, JSON_UNESCAPED_UNICODE);
     }
 
     private function error($type) {
