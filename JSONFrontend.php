@@ -86,23 +86,26 @@ namespace Markaos\BakAPI {
 
       $res = $db->raw("SELECT MAX(_ID) AS last FROM changes WHERE field_UID=?", [$_GET["token"]]);
       $transactions = \Markaos\BakAPI\BakAPI::getChanges($_GET["token"], $_GET["trans"]);
-      echo '{"status":"success","code":0,"t":[';
-      $f = true;
+      $out = [
+        'status'    => 'success',
+        'code'      => 0,
+        't'         => array(),
+        'last'      => $res[0]['last'],
+        'checksum'  => $hash
+      ];
+
       foreach($transactions as $t) {
-        if(!$f) echo ',';
-        $f = false;
-        $t = unserialize($t["serialized"]);
-        echo '{"type":"' . $t["type"] . '","sect":"' . $t["table"] . '",';
-        echo '"data":{';
-        $f2 = true;
-        foreach($t["data"] as $key => $value) {
-          if(!$f2) echo ',';
-          $f2 = false;
-          echo '"' . $key . '":"' . $value . '"';
+        $t = unserialize($t['serialized']);
+        $tArr = [
+          'type'    => $t['type'],
+          'sect'    => $t['table'],
+          'data'    => array()
+        ];
+        foreach($t['data'] as $key => $value) {
+          $tArr['data'][$key] = $value;
         }
-        echo '}}';
+        $out['t'][] = $tArr;
       }
-      echo '],"last":"' . $res[0]["last"] . '","checksum":"' . $hash . '"}';
     }
 
     private function handleDatabase() {
