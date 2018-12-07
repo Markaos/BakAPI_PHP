@@ -113,29 +113,27 @@ namespace Markaos\BakAPI {
 
       $db = \Markaos\BakAPI\BakAPI::getFullDatabase($_GET["token"]);
 
-      echo '{"status":"success","code":0,"d":{';
-      $f = true;
+      $out = [
+        'status'    => 'sucess',
+        'code'      => 0,
+        'd'         => array(),
+        'last'      => $db['transaction'],
+        'checksum'  => $db['hash']
+      ];
+
       foreach($db as $section => $data) {
         if(!is_array($data)) continue;
-        if(!$f) echo ',';
-        $f = false;
-        echo '"' . $section . '":[';
-        $f2 = true;
+        $out['d'][$section] = array();
         foreach($data as $entry) {
-          if(!$f2) echo ',';
-          $f2 = false;
-          echo '{';
-          $f3 = true;
+          $tmpHolder = array();
           foreach($entry as $key => $value) {
-            if(!$f3) echo ',';
-            $f3 = false;
-            echo '"' . $key . '":"' . $value . '"';
+            $tmpHolder[$key] = $value;
           }
-          echo '}';
+          $out['d'][$section][] = $tmpHolder;
         }
-        echo ']';
       }
-      echo '},"last":"' . $db["transaction"] . '","checksum":"' . $db["hash"] . '"}';
+
+      echo json_encode($out);
     }
 
     private function error($type) {
