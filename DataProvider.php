@@ -16,7 +16,9 @@ namespace Markaos\BakAPI {
     public function __construct($db, $client, $uid = null) {
       $this->uid = $uid;
       $this->db = $db;
-      $this->client = str_replace('\\', '_', get_class($client));
+      if($client !== null) { // I know... it somehow became legacy code
+        $this->client = str_replace('\\', '_', get_class($client));
+      }
     }
 
     public function getData($uid) {
