@@ -22,7 +22,9 @@ namespace Markaos\BakAPI {
 
     private static function init() {
       register_shutdown_function("Markaos\BakAPI\Log::send");
+      // Yes, DB reference doubles as init-done indicator
       if(self::$db === null) {
+        self::$context = array();
         $settings = \Markaos\BakAPI\Util::getSettings();
         self::$db = new $settings["database"]("log");
         self::$db->createTable($settings["log_table"], array(
@@ -67,6 +69,7 @@ namespace Markaos\BakAPI {
     // write it in every log() call. Useful when processing user data or things
     // like that.
     public static function addContext($context) {
+      self::init();
       $count = count(self::$context);
       self::$context[$count] = $context;
       return $count;
